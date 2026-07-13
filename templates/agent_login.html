@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Login - Export Support India</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+    :root {
+      --primary-navy: #0A1A3A;
+      --primary-gold: #C6A961;
+      --accent-blue: #2D5AA9;
+      --accent-teal: #1A7F7A;
+      --light-bg: #F8FAFC;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-bg);
+      color: #1E293B;
+      min-height: 100vh;
+    }
+    .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .navy-gradient {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(10, 26, 58, 0.08);
+    }
+    .btn-agent {
+      background: var(--accent-teal);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-agent:hover {
+      background: #166C67;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(26, 127, 122, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="navy-gradient text-white py-4">
+    <div class="container mx-auto px-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="logo-container">
+            <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-lg">DI</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold tracking-wide">DIVIT INTERNATIONAL</p>
+            <p class="text-xs text-gray-300">Global Trade Excellence</p>
+          </div>
+        </div>
+        <div class="text-center">
+          <h1 class="text-3xl font-heading font-bold tracking-tight">EXPORT SUPPORT INDIA</h1>
+          <p class="text-sm text-gray-300 mt-1">Agent Portal Login</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="text-right">
+            <p class="text-sm font-semibold tracking-wide">SUNSAI</p>
+            <p class="text-xs text-gray-300">Quality Assurance</p>
+          </div>
+          <div class="logo-container">
+            <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-lg">SS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Main Content -->
+  <main class="flex-grow flex items-center justify-center">
+    <div class="glass-panel rounded-xl shadow-lg p-8 w-full max-w-md">
+      <h2 class="text-2xl font-heading font-bold mb-6 text-center">Agent Login</h2>
+      <form id="loginForm" class="space-y-6">
+        <div>
+          <label for="user_login" class="block text-sm font-medium mb-2">Username</label>
+          <input type="text" id="user_login" name="user_login" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal" />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium mb-2">Password</label>
+          <input type="password" id="password" name="password" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal" />
+        </div>
+        <button type="submit" class="btn-agent w-full py-2 rounded-lg font-semibold text-lg">Login</button>
+      </form>
+      <div id="loginMessage" class="mt-4 text-center text-red-600"></div>
+    </div>
+  </main>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const user_login = document.getElementById('user_login').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('/api/agent-login/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_login, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Redirect to admin portal if user is admin, otherwise to agent portal
+        if (data.isAdmin) {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'agent.html';
+        }
+      } else {
+        document.getElementById('loginMessage').textContent = data.message || 'Invalid credentials';
+      }
+    });
+  </script>
+</body>
+</html>

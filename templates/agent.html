@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Portal - Export Support India</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary-navy: #0A1A3A;
+      --primary-gold: #C6A961;
+      --accent-blue: #2D5AA9;
+      --accent-teal: #1A7F7A;
+      --light-bg: #F8FAFC;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-bg);
+      color: #1E293B;
+      min-height: 100vh;
+    }
+    
+    .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .navy-gradient {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+    }
+    
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(10, 26, 58, 0.08);
+    }
+    
+    .elevated-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid #E2E8F0;
+    }
+    
+    .elevated-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(10, 26, 58, 0.12);
+    }
+    
+    .btn-primary {
+      background: var(--primary-navy);
+      color: white;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-primary:hover {
+      background: #1A2C4F;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(10, 26, 58, 0.15);
+    }
+    
+    .btn-task {
+      background: var(--accent-blue);
+      color: white;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .btn-task:hover {
+      background: #264A9C;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(45, 90, 169, 0.15);
+    }
+    
+    .btn-orange {
+      background: #EA580C;
+      color: white;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .btn-orange:hover {
+      background: #C2410C;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(234, 88, 12, 0.15);
+    }
+    
+    .btn-teal {
+      background: var(--accent-teal);
+      color: white;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .btn-teal:hover {
+      background: #166C67;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(26, 127, 122, 0.15);
+    }
+    
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-pending .status-dot {
+      background: #F59E0B;
+    }
+    
+    .status-inprocess .status-dot {
+      background: #10B981;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .logo-container {
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 0.75rem;
+      background: white;
+    }
+    
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: var(--primary-gold);
+      margin: 1rem auto;
+    }
+    
+    .section-title {
+      border-left: 4px solid var(--primary-gold);
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.25rem;
+      width: 100%;
+      border-radius: 12px;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+      transform: translateX(4px);
+    }
+    
+    .icon-container {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .icon-orange {
+      background: rgba(234, 88, 12, 0.1);
+      color: #EA580C;
+    }
+    
+    .icon-teal {
+      background: rgba(26, 127, 122, 0.1);
+      color: var(--accent-teal);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="navy-gradient text-white py-4">
+    <div class="container mx-auto px-6">
+      <div class="flex items-center justify-between">
+        <!-- Left Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="logo-container">
+            <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-lg">DI</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold tracking-wide">DIVIT INTERNATIONAL</p>
+            <p class="text-xs text-gray-300">Global Trade Excellence</p>
+          </div>
+        </div>
+        
+        <!-- Center Title -->
+        <div class="text-center">
+          <h1 class="text-2xl font-heading font-bold tracking-tight">AGENT PORTAL</h1>
+          <p class="text-sm text-gray-300 mt-1">Export Support India</p>
+        </div>
+        
+        <!-- Right Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="text-right">
+            <p class="text-sm font-semibold tracking-wide">SUNSAI</p>
+            <p class="text-xs text-gray-300">Quality Assurance</p>
+          </div>
+          <div class="logo-container">
+            <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-lg">SS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 py-10">
+    <div class="container mx-auto px-6">
+      
+      <!-- Portal Title -->
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-heading font-bold text-gray-900 mb-4">Export Management System</h2>
+        <div class="divider"></div>
+        <p class="text-gray-600 max-w-2xl mx-auto">Access all tools and records for managing export operations, client relationships, and task tracking</p>
+      </div>
+
+      <!-- Task Management Section -->
+      <div class="mb-12">
+        <div class="flex justify-center gap-6 mb-8">
+          <form action="tasks.html" method="get" class="w-full max-w-sm">
+            <button type="submit" class="btn-task w-full py-4 px-6 rounded-xl font-semibold text-lg">
+              <div class="status-indicator status-pending">
+                <span class="status-dot"></span>
+                TASKS RECORDS
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Management Sections -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        
+        <!-- Company & Contact Management -->
+        <div class="glass-panel rounded-2xl p-8 elevated-card">
+          <h3 class="text-2xl font-heading font-bold text-gray-900 section-title">Company & Contact Management</h3>
+          
+          <div class="space-y-4">
+            <button onclick="window.location.href='company_list.html'" class="action-btn bg-white border border-gray-200 hover:border-orange-300">
+              <div class="icon-container icon-orange">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m-2 0H7m5 0v-5a2 2 0 00-2-2H8a2 2 0 00-2 2v5m6 0v-4a1 1 0 00-1-1h-1a1 1 0 00-1 1v4"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900">Company List</div>
+                <div class="text-sm text-gray-500 mt-1">View and manage all company records</div>
+              </div>
+            </button>
+            
+            <form action="company_records.html" method="get" class="w-full">
+              <button type="submit" class="action-btn bg-white border border-gray-200 hover:border-orange-300 w-full">
+                <div class="icon-container icon-orange">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-gray-900">Company Records</div>
+                  <div class="text-sm text-gray-500 mt-1">Detailed company information and history</div>
+                </div>
+              </button>
+            </form>
+            
+            <button onclick="window.location.href='contact_person_records.html'" class="action-btn bg-white border border-gray-200 hover:border-orange-300">
+              <div class="icon-container icon-orange">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900">Contact Person Records</div>
+                <div class="text-sm text-gray-500 mt-1">Manage all client and partner contacts</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Operations Management -->
+        <div class="glass-panel rounded-2xl p-8 elevated-card">
+          <h3 class="text-2xl font-heading font-bold text-gray-900 section-title">Operations Management</h3>
+          
+          <div class="space-y-4">
+            <form action="admin_manage_utility.html" method="get" class="w-full">
+              <button type="submit" class="action-btn bg-white border border-gray-200 hover:border-teal-300 w-full">
+                <div class="icon-container icon-teal">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.026 3.31 1.945 0 1.258.652 2.242 1.952 2.944.521.233.603 1.019.063 1.322-1.355.787-1.968 2.453-1.968 4.176 0 1.922 1.767 3.462 3.322 3.462.983 0 1.921-.368 2.632-.952a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.026 3.31 1.945 0 1.258.652 2.242 1.952 2.944.521.233.603 1.019.063 1.322-1.355.787-1.968 2.453-1.968 4.176 0 1.922 1.767 3.462 3.322 3.462.983 0 1.921-.368 2.632-.952m0-11.964a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.026 3.31 1.945v3.28m0-8.738c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.026 3.31 1.945"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-gray-900">Manage Utility</div>
+                  <div class="text-sm text-gray-500 mt-1">Master data and utilities management</div>
+                </div>
+              </button>
+            </form>
+            
+            <form action="products.html" method="get" class="w-full">
+              <button type="submit" class="action-btn bg-white border border-gray-200 hover:border-teal-300 w-full">
+                <div class="icon-container icon-teal">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-gray-900">Products</div>
+                  <div class="text-sm text-gray-500 mt-1">Product catalog and specifications</div>
+                </div>
+              </button>
+            </form>
+            
+            <form action="add_contact_person.html" method="get" class="w-full">
+              <button type="submit" class="action-btn bg-white border border-gray-200 hover:border-teal-300 w-full">
+                <div class="icon-container icon-teal">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-semibold text-gray-900">Add New Contact Person</div>
+                  <div class="text-sm text-gray-500 mt-1">Create new contact records</div>
+                </div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Status & Info -->
+      <div class="mt-16 max-w-4xl mx-auto">
+        <div class="glass-panel rounded-2xl p-8 text-center">
+          <h4 class="text-lg font-heading font-semibold text-gray-900 mb-4">System Overview</h4>
+          <p class="text-gray-600 mb-6">
+            Streamline your export operations with our comprehensive management system
+          </p>
+          
+          <div class="flex justify-center gap-8">
+            <div class="flex items-center gap-3">
+              <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+              <span class="text-sm text-gray-600">Pending Tasks</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
+              <span class="text-sm text-gray-600">Active Processing</span>
+             </div>
+            <div class="flex items-center gap-3">
+              <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+              <span class="text-sm text-gray-600">Completed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Footer -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <div class="flex justify-center">
+          <button onclick="window.location.href='home.html'" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+            ← Return to Main Portal
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white py-6 border-t border-gray-200 mt-auto">
+    <div class="container mx-auto px-6">
+      <div class="text-center text-gray-600">
+        <p class="text-sm">© 2025 Export Support India. All Rights Reserved.</p>
+        <p class="text-xs mt-1 text-gray-500">Agent Portal v2.1 • Last updated: Today</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/profile.js"></script>
+</body>
+</html>

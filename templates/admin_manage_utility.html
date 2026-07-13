@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utility Manager - Export Support CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-navy: #0A1A3A;
+            --primary-gold: #C6A961;
+            --accent-blue: #2D5AA9;
+            --accent-teal: #1A7F7A;
+            --accent-purple: #6C2D8F;
+            --light-bg: #F8FAFC;
+            --border-light: #E2E8F0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: #1E293B;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .navy-gradient {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+        }
+        
+        .btn-primary {
+            background: var(--primary-navy);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: #1A2C4F;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(10, 26, 58, 0.15);
+        }
+        
+        .btn-teal {
+            background: var(--accent-teal);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-teal:hover {
+            background: #166C67;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 127, 122, 0.15);
+        }
+        
+        .btn-purple {
+            background: var(--accent-purple);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-purple:hover {
+            background: #5B2380;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(108, 45, 143, 0.15);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            background: white;
+            font-size: 0.95rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 3px rgba(10, 26, 58, 0.1);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .modal-header {
+            background: var(--primary-navy);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-modal-save {
+            background: var(--accent-teal);
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-modal-save:hover {
+            background: #166C67;
+            transform: translateY(-1px);
+        }
+        
+        .btn-modal-cancel {
+            background: #94A3B8;
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-modal-cancel:hover {
+            background: #64748B;
+        }
+        
+        .section-heading {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--primary-navy);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary-gold);
+            display: inline-block;
+        }
+        
+        .utility-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .utility-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+        
+        .db-message {
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: #F1F5F9;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            color: #1E293B;
+            border-left: 3px solid var(--accent-teal);
+            display: none;
+        }
+        
+        .db-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .grid-4col {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.75rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid-4col {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .grid-4col {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .logo-container {
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="navy-gradient text-white py-5 shadow-lg">
+        <div class="container mx-auto px-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="logo-container">
+                        <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-md">DI</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold tracking-wide">DIVIT INTERNATIONAL</p>
+                        <p class="text-xs text-gray-300">Global Trade Excellence</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h1 class="text-2xl font-heading font-bold tracking-tight">UTILITY MANAGER</h1>
+                    <p class="text-xs text-gray-300 mt-1">Master Data Management</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold tracking-wide">SUNSAI</p>
+                        <p class="text-xs text-gray-300">Quality Assurance</p>
+                    </div>
+                    <div class="logo-container">
+                        <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-md">SS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12">
+        <div class="container mx-auto px-8 max-w-7xl">
+            
+            <!-- Page Title -->
+            <div class="mb-10">
+                <h2 class="text-3xl font-heading font-bold text-gray-900">Master Data Utilities</h2>
+                <div class="w-16 h-0.5 bg-[#C6A961] mt-3"></div>
+                <p class="text-gray-500 mt-3">Manage reference data for industries, categories, departments, and designations</p>
+            </div>
+
+            <!-- Utility Cards Grid -->
+            <div class="grid-4col mb-12">
+                <!-- Industry Card -->
+                <div class="utility-card" onclick="openUtilityChoiceModal('industries', 'Industry')">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-[#2D5AA9]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m-2 0H7m5 0v-5a2 2 0 00-2-2H8a2 2 0 00-2 2v5m6 0v-4a1 1 0 00-1-1h-1a1 1 0 00-1 1v4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-gray-900">Industry</h3>
+                        <p class="text-sm text-gray-500 mt-2">Manage industry classifications</p>
+                        <div class="mt-4 px-4 py-2 bg-blue-50 rounded-lg text-blue-700 text-xs font-semibold">industry table</div>
+                    </div>
+                </div>
+
+                <!-- Category Card -->
+                <div class="utility-card" onclick="openUtilityChoiceModal('categories', 'Category')">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-[#1A7F7A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l5 5a2 2 0 01.586 1.414V19a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-gray-900">Category</h3>
+                        <p class="text-sm text-gray-500 mt-2">Manage product categories</p>
+                        <div class="mt-4 px-4 py-2 bg-green-50 rounded-lg text-green-700 text-xs font-semibold">category table</div>
+                    </div>
+                </div>
+
+                <!-- Department Card -->
+                <div class="utility-card" onclick="openUtilityChoiceModal('departments', 'Department')">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-[#6C2D8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-gray-900">Department</h3>
+                        <p class="text-sm text-gray-500 mt-2">Manage organizational departments</p>
+                        <div class="mt-4 px-4 py-2 bg-purple-50 rounded-lg text-purple-700 text-xs font-semibold">department table</div>
+                    </div>
+                </div>
+
+                <!-- Designation Card -->
+                <div class="utility-card" onclick="openUtilityChoiceModal('designations', 'Designation')">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-[#C6A961]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-gray-900">Designation</h3>
+                        <p class="text-sm text-gray-500 mt-2">Manage job designations</p>
+                        <div class="mt-4 px-4 py-2 bg-amber-50 rounded-lg text-amber-700 text-xs font-semibold">designation table</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recently Added Items Section -->
+            <div class="mt-12">
+                <h3 class="section-heading">Recently Added Records</h3>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div id="recentIndustries" class="bg-white rounded-xl border border-gray-200 p-4">
+                        <div class="text-sm font-semibold text-blue-700 mb-2">📊 Industries</div>
+                        <div id="industryList" class="space-y-1 text-sm text-gray-600">
+                            <p class="text-gray-400 italic">No industries added yet</p>
+                        </div>
+                    </div>
+                    <div id="recentCategories" class="bg-white rounded-xl border border-gray-200 p-4">
+                        <div class="text-sm font-semibold text-green-700 mb-2">📁 Categories</div>
+                        <div id="categoryList" class="space-y-1 text-sm text-gray-600">
+                            <p class="text-gray-400 italic">No categories added yet</p>
+                        </div>
+                    </div>
+                    <div id="recentDepartments" class="bg-white rounded-xl border border-gray-200 p-4">
+                        <div class="text-sm font-semibold text-purple-700 mb-2">🏢 Departments</div>
+                        <div id="departmentList" class="space-y-1 text-sm text-gray-600">
+                            <p class="text-gray-400 italic">No departments added yet</p>
+                        </div>
+                    </div>
+                    <div id="recentDesignations" class="bg-white rounded-xl border border-gray-200 p-4">
+                        <div class="text-sm font-semibold text-amber-700 mb-2">👔 Designations</div>
+                        <div id="designationList" class="space-y-1 text-sm text-gray-600">
+                            <p class="text-gray-400 italic">No designations added yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Link -->
+            <div class="mt-12 text-center">
+                <button onclick="returnToPortal()" class="text-gray-400 hover:text-gray-600 text-sm flex items-center justify-center gap-1 mx-auto transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Back to Admin Portal
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-6 border-t border-gray-200 mt-auto">
+        <div class="container mx-auto px-8">
+            <div class="text-center text-gray-500 text-sm">
+                <p>© 2025 Export Support India. All Rights Reserved.</p>
+                <p class="text-xs mt-1 text-gray-400">Utility Manager • Master Data Management</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: Utility Choice (Add or Delete) -->
+    <div id="utilityChoiceModal" class="modal-overlay">
+        <div class="modal-content max-w-sm">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold" id="utilityChoiceTitle">Utility</h3>
+            </div>
+            <div class="modal-body space-y-3">
+                <button id="choiceAddBtn" class="w-full py-4 bg-green-50 text-green-700 rounded-xl font-bold hover:bg-green-100 transition-colors flex items-center justify-center gap-2 border border-green-100">
+                    ➕ Add <span class="choice-type-name"></span>
+                </button>
+                <button id="choiceDeleteBtn" class="admin-only hidden w-full py-4 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors flex items-center justify-center gap-2 border border-red-100">
+                    🗑️ Delete <span class="choice-type-name"></span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel w-full py-3" onclick="closeUtilityChoiceModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Industry -->
+    <div id="industryModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">➕ Add New Industry</h3>
+            </div>
+            <div class="modal-body">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Industry Name <span class="text-orange-500">*</span></label>
+                <input type="text" id="industryName" class="form-input" placeholder="e.g., Textile, Automotive, IT Services">
+                <div id="industryDbMessage" class="db-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeIndustryModal()">Cancel</button>
+                <button class="btn-modal-save" onclick="saveIndustry()">Save Industry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Category -->
+    <div id="categoryModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">📁 Add New Category</h3>
+            </div>
+            <div class="modal-body">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Category Name <span class="text-orange-500">*</span></label>
+                <input type="text" id="categoryName" class="form-input" placeholder="e.g., Consumer Goods, Industrial Equipment">
+                <div id="categoryDbMessage" class="db-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeCategoryModal()">Cancel</button>
+                <button class="btn-modal-save" onclick="saveCategory()">Save Category</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Department -->
+    <div id="departmentModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">🏢 Add New Department</h3>
+            </div>
+            <div class="modal-body">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Department Name <span class="text-orange-500">*</span></label>
+                <input type="text" id="departmentName" class="form-input" placeholder="e.g., Sales, Marketing, Operations">
+                <div id="departmentDbMessage" class="db-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeDepartmentModal()">Cancel</button>
+                <button class="btn-modal-save" onclick="saveDepartment()">Save Department</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Designation -->
+    <div id="designationModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">👔 Add New Designation</h3>
+            </div>
+            <div class="modal-body">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Designation Name <span class="text-orange-500">*</span></label>
+                <input type="text" id="designationName" class="form-input" placeholder="e.g., Manager, Executive, Director">
+                <div id="designationDbMessage" class="db-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeDesignationModal()">Cancel</button>
+                <button class="btn-modal-save" onclick="saveDesignation()">Save Designation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Utility Delete Search -->
+    <div id="deleteSearchModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header bg-red-700">
+                <h3 class="text-lg font-heading font-semibold text-white">🗑️ Delete <span id="deleteUtilityType"></span></h3>
+            </div>
+            <div class="modal-body">
+                <p class="text-sm text-gray-600 mb-4">Search and select the record you wish to delete.</p>
+                <div class="relative">
+                    <input type="text" id="utilitySearchInput" class="form-input pr-10" placeholder="Search by name...">
+                    <div class="absolute right-3 top-3.5 text-gray-400">🔍</div>
+                </div>
+                <div id="utilitySearchResults" class="mt-4 max-h-48 overflow-y-auto space-y-1 custom-scrollbar">
+                    <!-- Search results will appear here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeDeleteSearchModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Delete Confirmation -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content max-w-md">
+            <div class="modal-body text-center pt-8">
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-heading font-bold text-gray-900 mb-2">Are you sure?</h3>
+                <p class="text-gray-500">You are about to delete "<span id="confirmRecordName" class="font-semibold text-gray-700"></span>". This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer justify-center pb-8 border-none">
+                <button class="btn-modal-cancel px-8" onclick="closeDeleteConfirmModal()">No, Keep it</button>
+                <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-2.5 rounded-lg font-bold transition-colors" onclick="proceedToDependencies()">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Dependency & Reassignment -->
+    <div id="dependencyModal" class="modal-overlay">
+        <div class="modal-content max-w-2xl">
+            <div class="modal-header bg-amber-600">
+                <h3 class="text-lg font-heading font-semibold text-white">⚠️ Affect Analysis & Re-assignment</h3>
+            </div>
+            <div class="modal-body">
+                <div id="wizardIntro" class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
+                    <p class="text-sm text-amber-800">
+                        The utility you are deleting is linked to <span id="depTotalCount" class="font-bold"></span> records. 
+                        Please review each record and choose where to re-assign it.
+                    </p>
+                </div>
+
+                <!-- Wizard Card -->
+                <div id="wizardCard" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span id="recordTypeBadge" class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">COMPANY</span>
+                            <h4 id="recordNameDisplay" class="text-xl font-bold text-gray-900 mt-1">---</h4>
+                            <p class="text-xs text-gray-400 mt-1">Record ID: <span id="recordIdDisplay">---</span></p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Step</span>
+                            <div class="text-2xl font-black text-gray-200"><span id="currentStepText" class="text-amber-500">1</span> / <span id="totalStepsText">1</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-50">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Re-assign this record to:</label>
+                        <select id="individualReassignSelect" class="form-input bg-gray-50 border-gray-200 font-semibold text-gray-700">
+                            <!-- Options will be populated here -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-6">
+                    <div id="wizardProgress" class="bg-amber-500 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                
+                <!-- Set Rest to Default Option -->
+                <div id="bulkOption" class="text-center py-4 border-t border-gray-100 mt-6">
+                    <button onclick="handleSetRestDefault()" class="text-amber-600 hover:text-amber-700 text-sm font-bold flex items-center justify-center gap-2 mx-auto group">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Set the rest to default
+                    </button>
+                </div>
+
+                <!-- Completion Screen -->
+                <div id="completionScreen" class="hidden text-center py-10">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900">Analysis Complete!</h4>
+                    <p class="text-gray-500 mt-2">All records have been mapped for re-assignment.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="abortBtn" class="btn-modal-cancel" onclick="closeDependencyModal()">Abort Deletion</button>
+                <button id="applyNextBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold transition-colors" onclick="handleApplyNext()">Apply & Next</button>
+                <button id="finalizeBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg font-bold transition-colors shadow-lg" onclick="finalizeDeletion()">Finalize Deletion & Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Deletion State
+        let currentDeleteType = null;
+        let selectedRecord = null;
+        let allAlternatives = [];
+        let affectedRecords = [];
+        let currentIndex = 0;
+        let finalAssignments = [];
+
+        function showNotification(message, type = 'success') {
+            const n = document.createElement('div');
+            n.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-[2000] transition-all duration-300 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
+            n.innerHTML = `<span class="font-semibold">${message}</span>`;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 3000);
+        }
+
+        function openUtilityChoiceModal(type, label) {
+            document.getElementById('utilityChoiceTitle').textContent = label;
+            document.querySelectorAll('.choice-type-name').forEach(el => el.textContent = label);
+            
+            const addBtn = document.getElementById('choiceAddBtn');
+            const delBtn = document.getElementById('choiceDeleteBtn');
+            
+            // Set actions
+            addBtn.onclick = () => {
+                closeUtilityChoiceModal();
+                if (type === 'industries') openIndustryModal();
+                else if (type === 'categories') openCategoryModal();
+                else if (type === 'departments') openDepartmentModal();
+                else if (type === 'designations') openDesignationModal();
+            };
+            
+            delBtn.onclick = () => {
+                closeUtilityChoiceModal();
+                startDeleteWorkflow(type);
+            };
+            
+            document.getElementById('utilityChoiceModal').style.display = 'flex';
+        }
+
+        function closeUtilityChoiceModal() {
+            document.getElementById('utilityChoiceModal').style.display = 'none';
+        }
+
+        async function startDeleteWorkflow(type) {
+            // Check Admin Status
+            const userRes = await fetch('/api/agent-login/me');
+            const userData = await userRes.json();
+            
+            if (!userData.success || !userData.user || !userData.user.id_admin) {
+                showNotification('Only admin has the rights to delete', 'error');
+                return;
+            }
+
+            currentDeleteType = type;
+            const typeDisplay = type.charAt(0).toUpperCase() + type.slice(1).replace('ies', 'y');
+            document.getElementById('deleteUtilityType').textContent = typeDisplay;
+            document.getElementById('deleteSearchModal').style.display = 'flex';
+            document.getElementById('utilitySearchInput').value = '';
+            
+            // Initial fetch of all utilities
+            updateSearchResults('');
+            document.getElementById('utilitySearchInput').focus();
+        }
+
+        function closeDeleteSearchModal() {
+            document.getElementById('deleteSearchModal').style.display = 'none';
+        }
+
+        async function updateSearchResults(q) {
+            try {
+                const res = await fetch(`/api/metadata/${currentDeleteType}/search?q=${encodeURIComponent(q)}`);
+                const data = await res.json();
+                
+                const container = document.getElementById('utilitySearchResults');
+                if (data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-400 text-center py-4">No records found</p>';
+                    return;
+                }
+
+                container.innerHTML = data.map(item => `
+                    <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg hover:bg-red-50 transition-colors cursor-pointer group" onclick="confirmRecordDeletion(${item.id}, '${item.name.replace(/'/g, "\\'")}')">
+                        <div>
+                            <div class="font-semibold text-gray-700 group-hover:text-red-700">${item.name}</div>
+                            <div class="text-xs text-gray-400">ID: ${item.id}</div>
+                        </div>
+                        <div class="text-red-500 opacity-0 group-hover:opacity-100 text-xs font-bold">SELECT →</div>
+                    </div>
+                `).join('');
+            } catch (err) {}
+        }
+
+        document.getElementById('utilitySearchInput').addEventListener('input', (e) => {
+            updateSearchResults(e.target.value.trim());
+        });
+
+        function confirmRecordDeletion(id, name) {
+            selectedRecord = { id, name };
+            document.getElementById('confirmRecordName').textContent = name;
+            closeDeleteSearchModal();
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        async function proceedToDependencies() {
+            try {
+                // Fetch Dependencies
+                const depRes = await fetch(`/api/metadata/${currentDeleteType}/${selectedRecord.id}/dependencies`);
+                affectedRecords = await depRes.json();
+
+                // If no dependencies, skip wizard
+                if (affectedRecords.length === 0) {
+                    currentIndex = 0;
+                    finalAssignments = [];
+                    showNotification('No dependencies found. Proceeding to delete.');
+                    finalizeDeletion();
+                    closeDeleteConfirmModal();
+                    return;
+                }
+
+                // Fetch Alternatives for re-assignment
+                const altRes = await fetch(`/api/metadata/${currentDeleteType}`);
+                allAlternatives = await altRes.json();
+
+                // Reset Wizard State
+                currentIndex = 0;
+                finalAssignments = [];
+                
+                renderWizardStep();
+
+                closeDeleteConfirmModal();
+                document.getElementById('dependencyModal').style.display = 'flex';
+                
+                // Show wizard elements, hide completion
+                document.getElementById('wizardIntro').classList.remove('hidden');
+                document.getElementById('wizardCard').classList.remove('hidden');
+                document.getElementById('bulkOption').classList.remove('hidden');
+                document.getElementById('completionScreen').classList.add('hidden');
+                document.getElementById('applyNextBtn').classList.remove('hidden');
+                document.getElementById('finalizeBtn').classList.add('hidden');
+
+            } catch (err) {
+                showNotification('Error checking dependencies', 'error');
+            }
+        }
+
+        function renderWizardStep() {
+            const current = affectedRecords[currentIndex];
+            const total = affectedRecords.length;
+
+            document.getElementById('depTotalCount').textContent = total;
+            document.getElementById('currentStepText').textContent = currentIndex + 1;
+            document.getElementById('totalStepsText').textContent = total;
+            
+            const badge = document.getElementById('recordTypeBadge');
+            badge.textContent = current.type;
+            if (current.type === 'Product') {
+                badge.className = 'bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            } else if (current.type === 'Employee') {
+                badge.className = 'bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            } else {
+                badge.className = 'bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            }
+            
+            document.getElementById('recordNameDisplay').textContent = current.name;
+            document.getElementById('recordIdDisplay').textContent = current.id;
+            
+            // Progress Bar
+            document.getElementById('wizardProgress').style.width = `${((currentIndex) / total) * 100}%`;
+
+            // Populate Alternatives Select
+            const idKey = currentDeleteType === 'industries' ? 'industry_id' : 
+                        currentDeleteType === 'categories' ? 'category_id' : 
+                        currentDeleteType === 'departments' ? 'department_id' : 'designation_id';
+            
+            const nameKey = currentDeleteType === 'industries' ? 'industry_name' : 
+                          currentDeleteType === 'categories' ? 'category_name' : 'name';
+
+            const filteredAlts = allAlternatives.filter(a => a[idKey] !== selectedRecord.id);
+            const select = document.getElementById('individualReassignSelect');
+            select.innerHTML = filteredAlts.map(a => `
+                <option value="${a[idKey]}" ${a[nameKey].startsWith('Default') ? 'selected' : ''}>
+                    ${a[nameKey]}
+                </option>
+            `).join('');
+        }
+
+        function handleApplyNext() {
+            const reassignId = parseInt(document.getElementById('individualReassignSelect').value, 10);
+            finalAssignments.push({ recordId: affectedRecords[currentIndex].id, reassignId, recordType: affectedRecords[currentIndex].type });
+            
+            currentIndex++;
+            if (currentIndex < affectedRecords.length) {
+                renderWizardStep();
+            } else {
+                showCompletionScreen();
+            }
+        }
+
+        function handleSetRestDefault() {
+            const idKey = currentDeleteType === 'industries' ? 'industry_id' : 
+                        currentDeleteType === 'categories' ? 'category_id' : 
+                        currentDeleteType === 'departments' ? 'department_id' : 'designation_id';
+            
+            const nameKey = currentDeleteType === 'industries' ? 'industry_name' : 
+                          currentDeleteType === 'categories' ? 'category_name' : 'name';
+
+            const defaultUtility = allAlternatives.find(a => a[nameKey].startsWith('Default'));
+            if (!defaultUtility) {
+                alert('Default utility not found. Please map manually.');
+                return;
+            }
+
+            const defaultId = defaultUtility[idKey];
+
+            // Map all remaining records
+            for (let i = currentIndex; i < affectedRecords.length; i++) {
+                finalAssignments.push({ recordId: affectedRecords[i].id, reassignId: defaultId, recordType: affectedRecords[i].type });
+            }
+
+            showCompletionScreen();
+        }
+
+        function showCompletionScreen() {
+            document.getElementById('wizardIntro').classList.add('hidden');
+            document.getElementById('wizardCard').classList.add('hidden');
+            document.getElementById('bulkOption').classList.add('hidden');
+            document.getElementById('completionScreen').classList.remove('hidden');
+            document.getElementById('applyNextBtn').classList.add('hidden');
+            document.getElementById('finalizeBtn').classList.remove('hidden');
+            document.getElementById('wizardProgress').style.width = '100%';
+        }
+
+        function closeDependencyModal() {
+            document.getElementById('dependencyModal').style.display = 'none';
+        }
+
+        async function finalizeDeletion() {
+            try {
+                const res = await fetch(`/api/metadata/${currentDeleteType}/${selectedRecord.id}/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ assignments: finalAssignments })
+                });
+
+                if (res.ok) {
+                    showNotification(`"${selectedRecord.name}" deleted successfully!`);
+                    closeDependencyModal();
+                    loadDataFromDatabase(); // Refresh recently added lists
+                } else {
+                    const err = await res.json();
+                    showNotification('Error: ' + (err.error || 'Deletion failed'), 'error');
+                }
+            } catch (err) {
+                showNotification('Network error during deletion', 'error');
+            }
+        }
+
+        // Storage for recently added items (database-backed)
+        let industries = [];
+        let categories = [];
+        let departments = [];
+        let designations = [];
+
+        // Load data from database on page load
+        async function loadDataFromDatabase() {
+            try {
+                const [industriesRes, categoriesRes, departmentsRes, designationsRes] = await Promise.all([
+                    fetch('/api/metadata/industries/recent'),
+                    fetch('/api/metadata/categories/recent'),
+                    fetch('/api/metadata/departments/recent'),
+                    fetch('/api/metadata/designations/recent')
+                ]);
+
+                if (industriesRes.ok) {
+                    industries = (await industriesRes.json()).map(item => ({
+                        id: item.industry_id,
+                        name: item.industry_name
+                    }));
+                }
+                if (categoriesRes.ok) {
+                    categories = (await categoriesRes.json()).map(item => ({
+                        id: item.category_id,
+                        name: item.category_name
+                    }));
+                }
+                if (departmentsRes.ok) {
+                    departments = (await departmentsRes.json()).map(item => ({
+                        id: item.department_id,
+                        name: item.name
+                    }));
+                }
+                if (designationsRes.ok) {
+                    designations = (await designationsRes.json()).map(item => ({
+                        id: item.designation_id,
+                        name: item.name
+                    }));
+                }
+
+                updateLists();
+                
+                // Check Admin Status to show/hide delete buttons
+                const userRes = await fetch('/api/agent-login/me');
+                const userData = await userRes.json();
+                if (userData.success && userData.user && userData.user.id_admin) {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                }
+            } catch (err) {
+            }
+        }
+
+        // Helper to update the UI lists
+        function updateLists() {
+            const industryContainer = document.getElementById('industryList');
+            if (industries.length === 0) {
+                industryContainer.innerHTML = '<p class="text-gray-400 italic">No industries added yet</p>';
+            } else {
+                industryContainer.innerHTML = industries.map(ind => 
+                    `<div class="flex items-center justify-between py-1 border-b border-gray-100">
+                        <span>🏭 ${ind.name}</span>
+                        <span class="text-xs text-gray-400">ID: ${ind.id}</span>
+                    </div>`
+                ).join('');
+            }
+
+            const categoryContainer = document.getElementById('categoryList');
+            if (categories.length === 0) {
+                categoryContainer.innerHTML = '<p class="text-gray-400 italic">No categories added yet</p>';
+            } else {
+                categoryContainer.innerHTML = categories.map(cat => 
+                    `<div class="flex items-center justify-between py-1 border-b border-gray-100">
+                        <span>📁 ${cat.name}</span>
+                        <span class="text-xs text-gray-400">ID: ${cat.id}</span>
+                    </div>`
+                ).join('');
+            }
+
+            const departmentContainer = document.getElementById('departmentList');
+            if (departments.length === 0) {
+                departmentContainer.innerHTML = '<p class="text-gray-400 italic">No departments added yet</p>';
+            } else {
+                departmentContainer.innerHTML = departments.map(dept => 
+                    `<div class="flex items-center justify-between py-1 border-b border-gray-100">
+                        <span>🏢 ${dept.name}</span>
+                        <span class="text-xs text-gray-400">ID: ${dept.id}</span>
+                    </div>`
+                ).join('');
+            }
+
+            const designationContainer = document.getElementById('designationList');
+            if (designations.length === 0) {
+                designationContainer.innerHTML = '<p class="text-gray-400 italic">No designations added yet</p>';
+            } else {
+                designationContainer.innerHTML = designations.map(des => 
+                    `<div class="flex items-center justify-between py-1 border-b border-gray-100">
+                        <span>👔 ${des.name}</span>
+                        <span class="text-xs text-gray-400">ID: ${des.id}</span>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        // Show database message
+        function showDbMessage(elementId, tableName, columnName, value, newId) {
+            const msgDiv = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleString();
+            msgDiv.innerHTML = `
+                <div class="font-mono text-xs">
+                    <div class="text-green-700 font-semibold mb-1">✅ Database Updated Successfully</div>
+                    <div class="text-gray-700">INSERT INTO ${tableName} (${columnName})</div>
+                    <div class="text-gray-700">VALUES ('${value}');</div>
+                    <div class="text-gray-500 mt-1">→ New record created with ${tableName}_id = ${newId}</div>
+                    <div class="text-gray-400 text-xs mt-1">🕒 ${timestamp}</div>
+                </div>
+            `;
+            msgDiv.classList.add('show');
+            setTimeout(() => {
+                msgDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        // Industry Functions
+        function openIndustryModal() {
+            document.getElementById('industryModal').style.display = 'flex';
+            document.getElementById('industryName').value = '';
+            document.getElementById('industryDbMessage').classList.remove('show');
+        }
+        function closeIndustryModal() {
+            document.getElementById('industryModal').style.display = 'none';
+        }
+        function saveIndustry() {
+            const name = document.getElementById('industryName').value.trim();
+            if (!name) {
+                alert('Please enter an industry name');
+                return;
+            }
+            
+            fetch('/api/metadata/industries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ industry_name: name })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to save industry');
+                return response.json();
+            })
+            .then(data => {
+                industries.push({ id: data.industry_id, name: data.industry_name });
+                updateLists();
+                showDbMessage('industryDbMessage', 'industry', 'industry_name', name, data.industry_id);
+                setTimeout(() => closeIndustryModal(), 1500);
+            })
+            .catch(err => {
+                alert('Error saving industry: ' + err.message);
+            });
+        }
+
+        // Category Functions
+        function openCategoryModal() {
+            document.getElementById('categoryModal').style.display = 'flex';
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryDbMessage').classList.remove('show');
+        }
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').style.display = 'none';
+        }
+        function saveCategory() {
+            const name = document.getElementById('categoryName').value.trim();
+            if (!name) {
+                alert('Please enter a category name');
+                return;
+            }
+            
+            fetch('/api/metadata/categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ category_name: name })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to save category');
+                return response.json();
+            })
+            .then(data => {
+                categories.push({ id: data.category_id, name: data.category_name });
+                updateLists();
+                showDbMessage('categoryDbMessage', 'category', 'category_name', name, data.category_id);
+                setTimeout(() => closeCategoryModal(), 1500);
+            })
+            .catch(err => {
+                alert('Error saving category: ' + err.message);
+            });
+        }
+
+        // Department Functions
+        function openDepartmentModal() {
+            document.getElementById('departmentModal').style.display = 'flex';
+            document.getElementById('departmentName').value = '';
+            document.getElementById('departmentDbMessage').classList.remove('show');
+        }
+        function closeDepartmentModal() {
+            document.getElementById('departmentModal').style.display = 'none';
+        }
+        function saveDepartment() {
+            const name = document.getElementById('departmentName').value.trim();
+            if (!name) {
+                alert('Please enter a department name');
+                return;
+            }
+            
+            fetch('/api/metadata/departments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: name })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to save department');
+                return response.json();
+            })
+            .then(data => {
+                departments.push({ id: data.department_id, name: data.name });
+                updateLists();
+                showDbMessage('departmentDbMessage', 'department', 'name', name, data.department_id);
+                setTimeout(() => closeDepartmentModal(), 1500);
+            })
+            .catch(err => {
+                alert('Error saving department: ' + err.message);
+            });
+        }
+
+        // Designation Functions
+        function openDesignationModal() {
+            document.getElementById('designationModal').style.display = 'flex';
+            document.getElementById('designationName').value = '';
+            document.getElementById('designationDbMessage').classList.remove('show');
+        }
+        function closeDesignationModal() {
+            document.getElementById('designationModal').style.display = 'none';
+        }
+        function saveDesignation() {
+            const name = document.getElementById('designationName').value.trim();
+            if (!name) {
+                alert('Please enter a designation name');
+                return;
+            }
+            
+            fetch('/api/metadata/designations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: name })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to save designation');
+                return response.json();
+            })
+            .then(data => {
+                designations.push({ id: data.designation_id, name: data.name });
+                updateLists();
+                showDbMessage('designationDbMessage', 'designation', 'name', name, data.designation_id);
+                setTimeout(() => closeDesignationModal(), 1500);
+            })
+            .catch(err => {
+                alert('Error saving designation: ' + err.message);
+            });
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = ['industryModal', 'categoryModal', 'departmentModal', 'designationModal', 'deleteSearchModal', 'deleteConfirmModal', 'dependencyModal', 'utilityChoiceModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('industryModal').style.display = 'none';
+                document.getElementById('categoryModal').style.display = 'none';
+                document.getElementById('departmentModal').style.display = 'none';
+                document.getElementById('designationModal').style.display = 'none';
+                document.getElementById('deleteSearchModal').style.display = 'none';
+                document.getElementById('deleteConfirmModal').style.display = 'none';
+                document.getElementById('dependencyModal').style.display = 'none';
+                document.getElementById('utilityChoiceModal').style.display = 'none';
+            }
+        });
+
+        // Initialize with database data
+        loadDataFromDatabase();
+    </script>
+    <script src="/profile.js"></script>
+</body>
+</html>

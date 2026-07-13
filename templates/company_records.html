@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Records - Export Support CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-navy: #0A1A3A;
+            --primary-gold: #C6A961;
+            --accent-blue: #2D5AA9;
+            --accent-teal: #1A7F7A;
+            --light-bg: #F8FAFC;
+            --border-light: #E2E8F0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: #1E293B;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .navy-gradient {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+        }
+        
+        .status-badge {
+            background: #64748B;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            letter-spacing: 0.025em;
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: var(--primary-navy);
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--primary-gold);
+        }
+        
+        .form-input, .form-select {
+            border: 1px solid var(--border-light);
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 3px rgba(10, 26, 58, 0.1);
+        }
+        
+        .form-input[readonly] {
+            background-color: #F8FAFC;
+            color: #64748B;
+        }
+        
+        .btn-primary {
+            background: var(--primary-navy);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: #1A2C4F;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(10, 26, 58, 0.15);
+        }
+        
+        .btn-success {
+            background: var(--accent-teal);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-success:hover {
+            background: #166C67;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 127, 122, 0.15);
+        }
+        
+        .btn-secondary {
+            background: #64748B;
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+        .btn-modal-cancel {
+            background: #94A3B8;
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modal-cancel:hover {
+            background: #64748B;
+        }
+        
+        .contact-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-navy);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin: 0 auto;
+        }
+        
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: white;
+            color: #64748B;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-btn:hover {
+            border-color: var(--primary-navy);
+            color: var(--primary-navy);
+            transform: scale(1.05);
+        }
+        
+        .product-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            color: #475569;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .product-item:hover {
+            background: #F8FAFC;
+            padding-left: 1.25rem;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .modal-header {
+            background: var(--primary-navy);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #F1F5F9;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="navy-gradient text-white py-4 px-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-heading font-bold">TechCorp Solutions Private Limited</h1>
+                <p class="text-sm text-white/80 mt-1">Company Records Management</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="returnToPortal()" class="px-4 py-2 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+                    ← Back to Dashboard
+                </button>
+                <div class="status-badge">Not Applicable</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Left Column - Form Sections -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Company Information -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h3 class="section-title">Company Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                                <input type="text" data-field="legal_name" class="form-input w-full py-3 px-4 rounded-lg" readonly value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                <select data-field="category_id" id="companyCategorySelect" class="form-select w-full py-3 px-4 rounded-lg">
+                                    <option value="">-- select category --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                                <select data-field="industry_id" id="companyIndustrySelect" class="form-select w-full py-3 px-4 rounded-lg">
+                                    <option value="">-- select industry --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Company ID</label>
+                                <input type="text" data-field="company_id" class="form-input w-full py-3 px-4 rounded-lg" readonly value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select data-field="status" class="form-select w-full py-3 px-4 rounded-lg">
+                                    <option value="setting up context">Setting up context</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sales Information -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h3 class="section-title">Sales Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sales Stage</label>
+                                <select data-field="sales_stage_id" id="salesStageSelect" class="form-select w-full py-3 px-4 rounded-lg">
+                                    <option value="">-- select --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Lead Owner</label>
+                                <select data-field="lead_owner_id" id="leadOwnerSelect" class="form-select w-full py-3 px-4 rounded-lg">
+                                    <option value="">-- select --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Source Type</label>
+                                <input type="text" data-field="source_type" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Source Name</label>
+                                <input type="text" data-field="source_name" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select data-field="engagement_status" class="form-select w-full py-3 px-4 rounded-lg bg-blue-50 border-blue-200 text-blue-700">
+                                    <option value="">-- select --</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="InProcess">InProcess</option>
+                                    <option value="Prospect Lead">Prospect Lead</option>
+                                    <option value="Closed">Closed</option>
+                                    <option value="Future Lead">Future Lead</option>
+                                    <option value="Lost">Lost</option>
+                                    <option value="Resolved & Lost">Resolved & Lost</option>
+                                    <option value="Not Interested">Not Interested</option>
+                                    <option value="Disqualified">Disqualified</option>
+                                    <option value="Duplicate Record">Duplicate Record</option>
+                                    <option value="No Contact Details">No Contact Details</option>
+                                    <option value="Capture Information">Capture Information</option>
+                                    <option value="Converted">Converted</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Size Category</label>
+                                <input type="text" data-field="size_category" class="form-input w-full py-3 px-4 rounded-lg" readonly value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h3 class="section-title">Contact Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Address Line 1</label>
+                                <input type="text" data-field="address_line1" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Address Line 2</label>
+                                <input type="text" data-field="address_line2" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                <input type="text" data-field="city" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                                <input type="text" data-field="state" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+                                <input type="text" data-field="pincode" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                <input type="text" data-field="country" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                <input type="tel" data-field="phone_primary" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" data-field="email_primary" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                                <input type="url" data-field="website" class="form-input w-full py-3 px-4 rounded-lg" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Dates -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h3 class="section-title">Important Dates</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Demo Booking Date</label>
+                                <input type="date" data-field="demo_booking_date" class="form-input w-full py-3 px-4 rounded-lg bg-green-50 border-green-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Demo Scheduled Date</label>
+                                <input type="date" data-field="demo_scheduled_date" class="form-input w-full py-3 px-4 rounded-lg bg-green-50 border-green-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Demo Held Date</label>
+                                <input type="date" data-field="demo_held_date" class="form-input w-full py-3 px-4 rounded-lg bg-green-50 border-green-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Onboarding Date</label>
+                                <input type="date" data-field="onboard_date" class="form-input w-full py-3 px-4 rounded-lg bg-green-50 border-green-200">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <h3 class="section-title">Remarks</h3>
+                        <div>
+                            <textarea data-field="remarks" class="form-input w-full py-3 px-4 rounded-lg min-h-[120px]" placeholder="Enter remarks and notes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Actions & Products -->
+                <div class="space-y-6">
+                    <!-- Contact Actions -->
+                    <div class="glass-panel rounded-xl p-6">
+                        <div class="contact-avatar">JD</div>
+                        <div id="currentContactDisplay" class="text-center mt-4 space-y-2">
+                            <div class="text-sm text-gray-500">No contact person selected</div>
+                        </div>
+                        
+                        <div class="flex justify-center gap-2 mt-6">
+                            <button onclick="previousContact()" class="nav-btn">‹</button>
+                            <button onclick="nextContact()" class="nav-btn">›</button>
+                        </div>
+                        
+                        <div class="space-y-3 mt-6">
+                            <button onclick="window.location.href='products.html'" class="btn-primary w-full py-3 px-4 rounded-lg font-semibold">
+                                Add Products
+                            </button>
+                            <button onclick="openAddContactPerson()" class="btn-success w-full py-3 px-4 rounded-lg font-semibold">
+                                Add Contact Person
+                            </button>
+                            <button onclick="openFindContactModal()" class="btn-secondary w-full py-3 px-4 rounded-lg font-semibold">
+                                Find Record
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product List -->
+                    <div class="glass-panel rounded-xl p-6 custom-scrollbar" style="max-height: 500px; overflow-y: auto;">
+                        <h4 class="text-lg font-heading font-semibold text-gray-900 mb-4">Products</h4>
+                        <div id="companyProductsList" class="space-y-1">
+                            <div class="text-sm text-gray-500 py-4">Loading products...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                <div class="flex gap-3">
+                    <button class="btn-secondary py-3 px-6 rounded-lg font-semibold" onclick="openFetchCompanyModal()">
+                        Fetch Data
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button class="btn-primary py-3 px-6 rounded-lg font-semibold" onclick="saveCompanyChanges()">
+                        Save Changes
+                    </button>
+                    <button class="btn-success py-3 px-6 rounded-lg font-semibold" onclick="showAddCompanyForm()">
+                        Create New
+                    </button>
+                    <button id="deleteCompanyBtn" class="admin-only hidden bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors flex items-center gap-2" onclick="startCompanyDeleteWorkflow()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Delete Company
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-4 px-6 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto text-center text-gray-600">
+            <p class="text-sm">© 2025 Export Support CRM. Company Records Management System</p>
+        </div>
+    </footer>
+
+    <!-- Fetch Company Modal -->
+    <div id="fetchCompanyModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">Select Company to Fetch</h3>
+                <button onclick="closeFetchCompanyModal()" class="text-white text-2xl">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <input type="text" id="searchCompany" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Search company name...">
+                </div>
+                <div id="companyListModal" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
+                    <!-- Companies will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary py-3 px-6 rounded-lg font-semibold" onclick="closeFetchCompanyModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Find Contact Modal -->
+    <div id="findContactModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">Find Contact Person</h3>
+                <button onclick="closeFindContactModal()" class="text-white text-2xl">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <input type="text" id="searchContact" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Search by name, designation, or email...">
+                </div>
+                <div id="contactSearchList" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
+                    <!-- Contacts will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary py-3 px-6 rounded-lg font-semibold" onclick="closeFindContactModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Company Modal -->
+    <div id="addCompanyModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg font-heading font-semibold">Add New Company</h3>
+                <button onclick="closeAddCompanyForm()" class="text-white text-2xl">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addCompanyForm" method="POST" action="/api/companies">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Legal Name *</label>
+                            <input type="text" name="legal_name" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Company legal name" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Brand</label>
+                            <input type="text" name="brand" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Brand name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Scale</label>
+                            <input type="text" name="scale" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Small/Medium/Enterprise">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                            <select name="industry_id" id="industrySelect" class="form-select w-full py-3 px-4 rounded-lg">
+                                <option value="">-- select industry --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <select name="category_id" id="categorySelect" class="form-select w-full py-3 px-4 rounded-lg">
+                                <option value="">-- select category --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                            <input type="url" name="website" class="form-input w-full py-3 px-4 rounded-lg" placeholder="https://example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn URL</label>
+                            <input type="url" name="linkedin_url" class="form-input w-full py-3 px-4 rounded-lg" placeholder="https://linkedin.com/company/..">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Company Type</label>
+                            <select name="company_type" class="form-select w-full py-3 px-4 rounded-lg">
+                                <option value="">-- select type --</option>
+                                <option value="internal">Internal</option>
+                                <option value="client">Client</option>
+                                <option value="partner">Partner</option>
+                                <option value="lead">Lead</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <select name="status" class="form-select w-full py-3 px-4 rounded-lg">
+                                <option value="setting up context" selected>Setting up context</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="text-lg font-heading font-semibold text-gray-900 mb-4">Primary Contact</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ISD Code</label>
+                                <input type="text" name="contact.isd_code" class="form-input w-full py-3 px-4 rounded-lg" placeholder="e.g., +91">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Area Code</label>
+                                <input type="text" name="contact.area_code" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Area code">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Primary</label>
+                                <input type="tel" name="contact.phone_primary" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Main phone">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Secondary</label>
+                                <input type="tel" name="contact.phone_secondary" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Alternate">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Fax</label>
+                                <input type="text" name="contact.fax" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Fax number">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Primary</label>
+                                <input type="email" name="contact.email_primary" class="form-input w-full py-3 px-4 rounded-lg" placeholder="primary@company.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="text-lg font-heading font-semibold text-gray-900 mb-4">Address</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Address Line1</label>
+                                <input type="text" name="address.address_line1" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Address line 1">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Address Line2</label>
+                                <input type="text" name="address.address_line2" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Address line 2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                <input type="text" name="address.city" class="form-input w-full py-3 px-4 rounded-lg" placeholder="City">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                                <input type="text" name="address.state" class="form-input w-full py-3 px-4 rounded-lg" placeholder="State">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                <input type="text" name="address.country" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Country">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Pincode</label>
+                                <input type="text" name="address.pincode" class="form-input w-full py-3 px-4 rounded-lg" placeholder="Postal code">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary py-3 px-6 rounded-lg font-semibold" onclick="closeAddCompanyForm()">Cancel</button>
+                <button type="submit" form="addCompanyForm" class="btn-success py-3 px-6 rounded-lg font-semibold">Add Company</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Delete Confirmation -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content max-w-md">
+            <div class="modal-body text-center pt-8">
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-heading font-bold text-gray-900 mb-2">Are you sure?</h3>
+                <p class="text-gray-500">You are about to delete "<span id="confirmRecordName" class="font-semibold text-gray-700"></span>". This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer justify-center pb-8 border-none">
+                <button class="btn-modal-cancel px-8" onclick="closeDeleteConfirmModal()">No, Keep it</button>
+                <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-2.5 rounded-lg font-bold transition-colors" onclick="proceedToCompanyDependencies()">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Dependency & Reassignment -->
+    <div id="dependencyModal" class="modal-overlay">
+        <div class="modal-content max-w-2xl">
+            <div class="modal-header bg-amber-600">
+                <h3 class="text-lg font-heading font-semibold text-white">⚠️ Affect Analysis & Re-assignment</h3>
+                <button onclick="closeDependencyModal()" class="text-white text-2xl">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="wizardIntro" class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
+                    <p class="text-sm text-amber-800">
+                        The company you are deleting is linked to <span id="depTotalCount" class="font-bold"></span> records. 
+                        Please review each record and choose where to re-assign it.
+                    </p>
+                </div>
+
+                <!-- Wizard Card -->
+                <div id="wizardCard" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span id="recordTypeBadge" class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">EMPLOYEE</span>
+                            <h4 id="recordNameDisplay" class="text-xl font-bold text-gray-900 mt-1">---</h4>
+                            <p class="text-xs text-gray-400 mt-1">Record ID: <span id="recordIdDisplay">---</span></p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Step</span>
+                            <div class="text-2xl font-black text-gray-200"><span id="currentStepText" class="text-amber-500">1</span> / <span id="totalStepsText">1</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-50">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Re-assign this record to:</label>
+                        <select id="individualReassignSelect" class="form-select bg-gray-50 border-gray-200 font-semibold text-gray-700 w-full py-2 px-3 rounded-lg">
+                            <option value="">Select a company...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-6">
+                    <div id="wizardProgress" class="bg-amber-500 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                
+                <!-- Set Rest to Default Option -->
+                <div id="bulkOption" class="text-center py-4 border-t border-gray-100 mt-6">
+                    <button onclick="handleSetRestDefault()" class="text-amber-600 hover:text-amber-700 text-sm font-bold flex items-center justify-center gap-2 mx-auto group">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Set the rest to default
+                    </button>
+                </div>
+
+                <!-- Completion Screen -->
+                <div id="completionScreen" class="hidden text-center py-10">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900">Analysis Complete!</h4>
+                    <p class="text-gray-500 mt-2">All records have been mapped for re-assignment.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="abortBtn" class="btn-modal-cancel" onclick="closeDependencyModal()">Abort Deletion</button>
+                <button id="applyNextBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold transition-colors" onclick="handleApplyNext()">Apply & Next</button>
+                <button id="finalizeBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg font-bold transition-colors shadow-lg" onclick="finalizeCompanyDeletion()">Finalize Deletion & Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCompanyId = null;
+        let currentEngagementId = null;
+        let allCompanies = [];
+        let currentContacts = [];
+        let currentContactIndex = 0;
+        let metadataLoaded = false;
+
+        // Deletion State
+        let affectedRecords = [];
+        let currentIndex = 0;
+        let finalAssignments = [];
+        let tempReassignCompany = null;
+
+        // Navigate to previous contact person
+        function previousContact() {
+            if (currentContacts.length === 0) return;
+            currentContactIndex = (currentContactIndex - 1 + currentContacts.length) % currentContacts.length;
+            displayCurrentContact();
+        }
+
+        // Navigate to next contact person
+        function nextContact() {
+            if (currentContacts.length === 0) return;
+            currentContactIndex = (currentContactIndex + 1) % currentContacts.length;
+            displayCurrentContact();
+        }
+
+        // Open add contact person page with company ID pre-filled
+        function openAddContactPerson() {
+            if (!currentCompanyId) {
+                showNotification('Please fetch a company first', 'error');
+                return;
+            }
+            window.location.href = `add_contact_person.html?company_id=${currentCompanyId}`;
+        }
+
+        // Display the current contact person
+        function displayCurrentContact() {
+            if (currentContacts.length === 0) {
+                document.getElementById('currentContactDisplay').innerHTML = '<div class="text-sm text-gray-500">No contact persons found</div>';
+                document.querySelector('.contact-avatar').textContent = 'N/A';
+                return;
+            }
+
+            const contact = currentContacts[currentContactIndex];
+            const initials = `${contact.first_name?.charAt(0) || ''}${contact.last_name?.charAt(0) || ''}`.toUpperCase();
+            
+            // Update avatar
+            document.querySelector('.contact-avatar').textContent = initials || 'N/A';
+
+            // Update contact display
+            const displayHtml = `
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50 transition-colors group" 
+                     onclick="window.location.href='contact_person_records.html?contact_id=${contact.contact_id}'">
+                    <div class="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">${contact.first_name} ${contact.last_name}</div>
+                    <div class="text-xs text-gray-500 mt-2">
+                        ${contact.designation ? `<div><strong>Designation:</strong> ${contact.designation}</div>` : ''}
+                        ${contact.department ? `<div><strong>Department:</strong> ${contact.department}</div>` : ''}
+                    </div>
+                    ${contact.mobile_primary ? `<div class="text-xs text-gray-600 mt-2">📱 <strong>${contact.mobile_primary}</strong></div>` : ''}
+                    ${contact.email_primary ? `<div class="text-xs text-gray-600">📧 ${contact.email_primary}</div>` : ''}
+                    <div class="text-xs text-gray-400 mt-3 flex justify-between items-center">
+                        <span>${currentContactIndex + 1} of ${currentContacts.length}</span>
+                        <span class="text-blue-500 font-bold opacity-0 group-hover:opacity-100 transition-opacity text-[10px]">VIEW PROFILE →</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('currentContactDisplay').innerHTML = displayHtml;
+        }
+
+        // Open and populate fetch company modal
+        function openFetchCompanyModal() {
+            document.getElementById('fetchCompanyModal').style.display = 'flex';
+            loadCompaniesForModal();
+        }
+
+        function closeFetchCompanyModal() {
+            document.getElementById('fetchCompanyModal').style.display = 'none';
+        }
+
+        // Open and handle Find Contact modal
+        function openFindContactModal() {
+            if (!currentCompanyId) {
+                showNotification('Please fetch a company first', 'error');
+                return;
+            }
+            document.getElementById('findContactModal').style.display = 'flex';
+            document.getElementById('searchContact').value = '';
+            displayContactsInSearchModal(currentContacts);
+        }
+
+        function closeFindContactModal() {
+            document.getElementById('findContactModal').style.display = 'none';
+        }
+
+        function displayContactsInSearchModal(contacts) {
+            const container = document.getElementById('contactSearchList');
+            container.innerHTML = '';
+
+            if (!contacts || contacts.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">No contact persons found</p>';
+                return;
+            }
+
+            contacts.forEach((contact, index) => {
+                const div = document.createElement('div');
+                div.className = 'p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-semibold text-gray-900">${contact.first_name || ''} ${contact.last_name || ''}</div>
+                            <div class="text-sm text-gray-500">${contact.designation || 'No Designation'} | ${contact.department || 'No Department'}</div>
+                        </div>
+                        <div class="text-xs text-blue-600 font-medium">Select</div>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">${contact.email_primary || 'No Email'}</div>
+                `;
+                div.onclick = () => {
+                    const originalIndex = currentContacts.findIndex(c => c.contact_id === contact.contact_id);
+                    if (originalIndex !== -1) {
+                        currentContactIndex = originalIndex;
+                        displayCurrentContact();
+                        closeFindContactModal();
+                        showNotification('Contact selected', 'success');
+                    }
+                };
+                container.appendChild(div);
+            });
+        }
+
+        // Load companies into the fetch modal
+        async function loadCompaniesForModal() {
+            try {
+                const res = await fetch('/api/companies');
+                allCompanies = await res.json();
+                displayCompaniesInModal(allCompanies);
+            } catch (err) {
+                showNotification('Error loading companies', 'error');
+            }
+        }
+
+        // Display companies in modal with search filter
+        function displayCompaniesInModal(companies) {
+            const container = document.getElementById('companyListModal');
+            container.innerHTML = '';
+            
+            if (companies.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">No companies found</p>';
+                return;
+            }
+
+            companies.forEach(company => {
+                const div = document.createElement('div');
+                div.className = 'p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors';
+                div.innerHTML = `
+                    <div class="font-semibold text-gray-900">${company.legal_name}</div>
+                    <div class="text-sm text-gray-500 mt-1">ID: ${company.company_id} | ${company.status || 'N/A'}</div>
+                `;
+                div.onclick = () => {
+                    fetchAndDisplayCompanyData(company.company_id);
+                    closeFetchCompanyModal();
+                };
+                container.appendChild(div);
+            });
+        }
+
+        // Search logic for both modals
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchCompanyInput = document.getElementById('searchCompany');
+            if (searchCompanyInput) {
+                searchCompanyInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    const filtered = allCompanies.filter(c => 
+                        c.legal_name.toLowerCase().includes(query) ||
+                        c.brand?.toLowerCase().includes(query) ||
+                        c.company_id.toString().includes(query)
+                    );
+                    displayCompaniesInModal(filtered);
+                });
+            }
+
+            const searchContactInput = document.getElementById('searchContact');
+            if (searchContactInput) {
+                searchContactInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    const filtered = currentContacts.filter(c => 
+                        (c.first_name || '').toLowerCase().includes(query) ||
+                        (c.last_name || '').toLowerCase().includes(query) ||
+                        (c.designation || '').toLowerCase().includes(query) ||
+                        (c.department || '').toLowerCase().includes(query) ||
+                        (c.email_primary || '').toLowerCase().includes(query)
+                    );
+                    displayContactsInSearchModal(filtered);
+                });
+            }
+        });
+
+        // Fetch company data and populate form
+        async function fetchAndDisplayCompanyData(companyId) {
+            try {
+                if (!metadataLoaded) await loadMetadata();
+                
+                const res = await fetch(`/api/companies/${companyId}`);
+                const company = await res.json();
+
+                if (!company || company.error) {
+                    showNotification('Error fetching company data', 'error');
+                    return;
+                }
+
+                currentCompanyId = companyId;
+                document.querySelector('header h1').textContent = company.legal_name;
+                document.querySelector('header .status-badge').textContent = company.status || 'Not Applicable';
+
+                // Hide delete button for 'Export Support' companies
+                const deleteBtn = document.getElementById('deleteCompanyBtn');
+                if (company.legal_name.toLowerCase().includes('export support')) {
+                    deleteBtn.classList.add('hidden');
+                } else {
+                    // Re-check admin status if needed, but for now just show if not Export Support
+                    // The DOMContentLoaded handler already handles the 'admin-only' initial state
+                }
+
+                const fieldMap = {
+                    'legal_name': company.legal_name || '',
+                    'company_id': company.company_id || '',
+                    'address_line1': company.address_line1 || '',
+                    'address_line2': company.address_line2 || '',
+                    'city': company.city || '',
+                    'state': company.state || '',
+                    'pincode': company.pincode || '',
+                    'country': company.country || '',
+                    'phone_primary': company.phone_primary || '',
+                    'email_primary': company.email_primary || '',
+                    'website': company.website || '',
+                    'size_category': company.scale || ''
+                };
+
+                for (const [fieldName, value] of Object.entries(fieldMap)) {
+                    const input = document.querySelector(`input[data-field="${fieldName}"]`);
+                    if (input) input.value = value;
+                }
+
+                const industrySelect = document.querySelector('select[data-field="industry_id"]');
+                const categorySelect = document.querySelector('select[data-field="category_id"]');
+                const statusSelect = document.querySelector('select[data-field="status"]');
+                if (industrySelect) industrySelect.value = company.industry_id || '';
+                if (categorySelect) categorySelect.value = company.category_id || '';
+                if (statusSelect) statusSelect.value = company.status || 'setting up context';
+
+                await fetchAndDisplaySalesInformation(companyId);
+                await fetchAndDisplayContactPersons(companyId);
+                showNotification('Company data loaded successfully!', 'success');
+            } catch (err) {
+                showNotification('Error loading company data', 'error');
+            }
+        }
+
+        async function fetchAndDisplaySalesInformation(companyId) {
+            try {
+                const res = await fetch(`/api/client_engagement/company/${companyId}`);
+                if (!res.ok) {
+                    const fields = ['sales_stage_id', 'lead_owner_id', 'source_type', 'source_name', 'engagement_status', 'demo_booking_date', 'demo_scheduled_date', 'demo_held_date', 'onboard_date', 'remarks'];
+                    fields.forEach(f => {
+                        const elem = document.querySelector(`[data-field="${f}"]`);
+                        if (elem) elem.value = '';
+                    });
+                    return;
+                }
+                
+                const engagement = await res.json();
+                if (!engagement || Object.keys(engagement).length === 0) return;
+
+                const salesFields = {
+                    'sales_stage_id': engagement.sales_stage_id || '',
+                    'lead_owner_id': engagement.lead_owner_id || '',
+                    'source_type': engagement.source_type || '',
+                    'source_name': engagement.source_name || '',
+                    'engagement_status': engagement.engagement_status || '',
+                    'remarks': engagement.remarks || ''
+                };
+
+                for (const [fieldName, value] of Object.entries(salesFields)) {
+                    const elem = document.querySelector(`[data-field="${fieldName}"]`);
+                    if (elem) elem.value = value;
+                }
+
+                const onboardDateInput = document.querySelector('input[data-field="onboard_date"]');
+                if (onboardDateInput) onboardDateInput.value = engagement.onboard_date || '';
+
+                if (engagement.engagement_id) {
+                    const pipelineRes = await fetch(`/api/sales_pipeline/engagement/${engagement.engagement_id}`);
+                    if (pipelineRes.ok) {
+                        const pipeline = await pipelineRes.json();
+                        if (pipeline) {
+                            ['demo_booking_date', 'demo_scheduled_date', 'demo_held_date'].forEach(f => {
+                                const elem = document.querySelector(`input[data-field="${f}"]`);
+                                if (elem) elem.value = pipeline[f] || '';
+                            });
+                        }
+                    }
+                }
+                currentEngagementId = engagement.engagement_id;
+            } catch (err) {
+            }
+        }
+
+        async function fetchAndDisplayContactPersons(companyId) {
+            try {
+                const res = await fetch(`/api/contacts/company/${companyId}`);
+                const contacts = await res.json();
+                currentContacts = contacts || [];
+                currentContactIndex = 0;
+                displayCurrentContact();
+            } catch (err) {
+                currentContacts = [];
+                displayCurrentContact();
+            }
+        }
+
+        function showAddCompanyForm() { document.getElementById('addCompanyModal').style.display = 'flex'; }
+        function closeAddCompanyForm() { document.getElementById('addCompanyModal').style.display = 'none'; }
+
+        async function saveCompanyChanges() {
+            if (!currentCompanyId) {
+                showNotification('Please fetch a company first', 'error');
+                return;
+            }
+            
+            const payload = {
+                legal_name: document.querySelector('input[data-field="legal_name"]')?.value || null,
+                website: document.querySelector('input[data-field="website"]')?.value || null,
+                industry_id: parseInt(document.querySelector('select[data-field="industry_id"]')?.value) || null,
+                category_id: parseInt(document.querySelector('select[data-field="category_id"]')?.value) || null,
+                status: document.querySelector('select[data-field="status"]')?.value || null,
+                address_line1: document.querySelector('input[data-field="address_line1"]')?.value || null,
+                address_line2: document.querySelector('input[data-field="address_line2"]')?.value || null,
+                city: document.querySelector('input[data-field="city"]')?.value || null,
+                state: document.querySelector('input[data-field="state"]')?.value || null,
+                country: document.querySelector('input[data-field="country"]')?.value || null,
+                pincode: document.querySelector('input[data-field="pincode"]')?.value || null,
+                phone_primary: document.querySelector('input[data-field="phone_primary"]')?.value || null,
+                email_primary: document.querySelector('input[data-field="email_primary"]')?.value || null
+            };
+
+            try {
+                const res = await fetch(`/api/companies/${currentCompanyId}/full-update`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                
+                if (data && data.success) {
+                    const engagementPayload = {
+                        client_company_id: currentCompanyId,
+                        sales_stage_id: parseInt(document.querySelector('select[data-field="sales_stage_id"]')?.value) || null,
+                        lead_owner_id: parseInt(document.querySelector('select[data-field="lead_owner_id"]')?.value) || null,
+                        engagement_status: document.querySelector('select[data-field="engagement_status"]')?.value || null,
+                        source_type: document.querySelector('input[data-field="source_type"]')?.value || null,
+                        source_name: document.querySelector('input[data-field="source_name"]')?.value || null,
+                        onboard_date: document.querySelector('input[data-field="onboard_date"]')?.value || null,
+                        remarks: document.querySelector('textarea[data-field="remarks"]')?.value || null
+                    };
+
+                    const method = currentEngagementId ? 'PUT' : 'POST';
+                    const url = currentEngagementId ? `/api/client_engagement/${currentEngagementId}` : '/api/client_engagement';
+                    
+                    const engRes = await fetch(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(engagementPayload)
+                    });
+                    
+                    const engData = await engRes.json();
+                    if (engRes.ok || (engRes.status === 400 && engData.error === 'No fields to update')) {
+                        const engId = currentEngagementId || engData.engagement_id;
+                        if (engId) {
+                            await fetch(`/api/sales_pipeline/engagement/${engId}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    demo_booking_date: document.querySelector('input[data-field="demo_booking_date"]')?.value || null,
+                                    demo_scheduled_date: document.querySelector('input[data-field="demo_scheduled_date"]')?.value || null,
+                                    demo_held_date: document.querySelector('input[data-field="demo_held_date"]')?.value || null
+                                })
+                            });
+                        }
+                        
+                        // Update status badge
+                        const updatedStatus = document.querySelector('select[data-field="status"]')?.value;
+                        const headerStatusBadge = document.querySelector('header .status-badge');
+                        if (headerStatusBadge && updatedStatus) {
+                            headerStatusBadge.textContent = updatedStatus;
+                        }
+                        
+                        showNotification('All changes saved successfully!', 'success');
+                    }
+                }
+            } catch (err) {
+                showNotification('Error saving changes', 'error');
+            }
+        }
+
+        // Deletion Workflow
+        async function startCompanyDeleteWorkflow() {
+            if (!currentCompanyId) {
+                showNotification('Please fetch a company first', 'error');
+                return;
+            }
+
+            const name = document.querySelector('header h1').textContent;
+            document.getElementById('confirmRecordName').textContent = name;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        async function proceedToCompanyDependencies() {
+            try {
+                // Fetch All Companies for Re-assignment dropdown if not already loaded
+                if (allCompanies.length === 0) {
+                    const compRes = await fetch('/api/companies');
+                    allCompanies = await compRes.json();
+                }
+
+                const res = await fetch(`/api/companies/${currentCompanyId}/dependencies`);
+                if (!res.ok) {
+                    const text = await res.text();
+                    console.error('Non-ok response:', text);
+                    if (text.startsWith('<!DOCTYPE html>') || text.startsWith('<html')) {
+                        throw new Error(`Server returned HTML instead of JSON (Status ${res.status}). This usually means a 404 or 500 error page.`);
+                    }
+                    try {
+                        const errData = JSON.parse(text);
+                        throw new Error(errData.error || 'Server error');
+                    } catch (e) {
+                        throw new Error(`Server error (${res.status}): ${text.substring(0, 100)}`);
+                    }
+                }
+                affectedRecords = await res.json();
+
+                if (affectedRecords.length === 0) {
+                    currentIndex = 0;
+                    finalAssignments = [];
+                    finalizeCompanyDeletion();
+                    closeDeleteConfirmModal();
+                    return;
+                }
+
+                currentIndex = 0;
+                finalAssignments = [];
+                renderCompanyWizardStep();
+
+                closeDeleteConfirmModal();
+                document.getElementById('dependencyModal').style.display = 'flex';
+                
+                document.getElementById('wizardIntro').classList.remove('hidden');
+                document.getElementById('wizardCard').classList.remove('hidden');
+                document.getElementById('bulkOption').classList.remove('hidden');
+                document.getElementById('completionScreen').classList.add('hidden');
+                document.getElementById('applyNextBtn').classList.remove('hidden');
+                document.getElementById('finalizeBtn').classList.add('hidden');
+            } catch (err) {
+                showNotification('Error checking dependencies: ' + err.message, 'error');
+            }
+        }
+
+        function renderCompanyWizardStep() {
+            const current = affectedRecords[currentIndex];
+            const total = affectedRecords.length;
+
+            document.getElementById('depTotalCount').textContent = total;
+            document.getElementById('currentStepText').textContent = currentIndex + 1;
+            document.getElementById('totalStepsText').textContent = total;
+            
+            const badge = document.getElementById('recordTypeBadge');
+            badge.textContent = current.type;
+            
+            // Set badge colors based on type
+            if (current.type === 'Employee') {
+                badge.className = 'bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            } else if (current.type === 'Contact') {
+                badge.className = 'bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            } else if (current.type === 'Task') {
+                badge.className = 'bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            } else if (current.type === 'Engagement') {
+                badge.className = 'bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            } else {
+                badge.className = 'bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider';
+            }
+
+            document.getElementById('recordNameDisplay').textContent = current.name;
+            document.getElementById('recordIdDisplay').textContent = current.id;
+            
+            document.getElementById('wizardProgress').style.width = `${((currentIndex) / total) * 100}%`;
+            
+            // Populate Re-assignment Dropdown
+            const select = document.getElementById('individualReassignSelect');
+            select.innerHTML = '<option value="">Select a company...</option>';
+            
+            // Filter out the company being deleted
+            const alternatives = allCompanies.filter(c => c.company_id !== currentCompanyId);
+            // Sort by name
+            alternatives.sort((a, b) => a.legal_name.localeCompare(b.legal_name));
+            
+            alternatives.forEach(company => {
+                const opt = document.createElement('option');
+                opt.value = company.company_id;
+                opt.textContent = company.legal_name;
+                // Auto-select "Export Support India" if available as default
+                if (company.legal_name.toLowerCase().includes('export support india')) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+        }
+
+        function handleApplyNext() {
+            const select = document.getElementById('individualReassignSelect');
+            const reassignId = parseInt(select.value);
+            
+            if (!reassignId) {
+                showNotification('Please select a company to re-assign to', 'error');
+                return;
+            }
+            
+            finalAssignments.push({ 
+                recordId: affectedRecords[currentIndex].id, 
+                reassignId: reassignId, 
+                recordType: affectedRecords[currentIndex].type 
+            });
+            
+            currentIndex++;
+            if (currentIndex < affectedRecords.length) {
+                renderCompanyWizardStep();
+            } else {
+                showCompanyCompletionScreen();
+            }
+        }
+
+        async function handleSetRestDefault() {
+            try {
+                const res = await fetch('/api/companies/search?q=Export Support India');
+                const data = await res.json();
+                // Case-insensitive search for the default company
+                const defaultCompany = data.find(c => c.name.toLowerCase() === 'export support india');
+                
+                if (!defaultCompany) {
+                    showNotification('Default company "Export Support India" not found in database', 'error');
+                    return;
+                }
+
+                for (let i = currentIndex; i < affectedRecords.length; i++) {
+                    finalAssignments.push({ 
+                        recordId: affectedRecords[i].id, 
+                        reassignId: defaultCompany.id, 
+                        recordType: affectedRecords[i].type 
+                    });
+                }
+                showCompanyCompletionScreen();
+            } catch (err) {
+                showNotification('Error setting defaults', 'error');
+            }
+        }
+
+        function showCompanyCompletionScreen() {
+            document.getElementById('wizardIntro').classList.add('hidden');
+            document.getElementById('wizardCard').classList.add('hidden');
+            document.getElementById('bulkOption').classList.add('hidden');
+            document.getElementById('completionScreen').classList.remove('hidden');
+            document.getElementById('applyNextBtn').classList.add('hidden');
+            document.getElementById('finalizeBtn').classList.remove('hidden');
+            document.getElementById('wizardProgress').style.width = '100%';
+        }
+
+        function closeDependencyModal() {
+            document.getElementById('dependencyModal').style.display = 'none';
+        }
+
+        async function finalizeCompanyDeletion() {
+            try {
+                const res = await fetch(`/api/companies/${currentCompanyId}/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ assignments: finalAssignments })
+                });
+
+                if (res.ok) {
+                    showNotification('Company deleted successfully!');
+                    closeDependencyModal();
+                    window.location.href = 'company_list.html';
+                } else {
+                    const err = await res.json();
+                    showNotification('Error: ' + (err.error || 'Deletion failed'), 'error');
+                }
+            } catch (err) {
+                showNotification('Network error during deletion', 'error');
+            }
+        }
+
+        async function loadMetadata() {
+            if (metadataLoaded) return;
+            try {
+                const [inds, cats, stages, employees] = await Promise.all([
+                    fetch('/api/metadata/industries').then(r => r.json()),
+                    fetch('/api/metadata/categories').then(r => r.json()),
+                    fetch('/api/metadata/sales_stages').then(r => r.json()).catch(() => []),
+                    fetch('/api/employees').then(r => r.json()).catch(() => [])
+                ]);
+                
+                const populate = (id, data, valKey, textKey, defaultText) => {
+                    const sel = document.getElementById(id);
+                    if (!sel) return;
+                    sel.innerHTML = `<option value="">${defaultText}</option>`;
+                    data.forEach(d => {
+                        const o = document.createElement('option');
+                        o.value = d[valKey];
+                        o.text = d[textKey];
+                        sel.appendChild(o);
+                    });
+                };
+
+                populate('industrySelect', inds, 'industry_id', 'industry_name', '-- select industry --');
+                populate('companyIndustrySelect', inds, 'industry_id', 'industry_name', '-- select industry --');
+                populate('categorySelect', cats, 'category_id', 'category_name', '-- select category --');
+                populate('companyCategorySelect', cats, 'category_id', 'category_name', '-- select category --');
+                populate('salesStageSelect', stages, 'sales_stage_id', 'stage_name', '-- select --');
+                populate('leadOwnerSelect', employees, 'employee_id', 'first_name', '-- select --');
+                
+                // Fix employee names in leadOwnerSelect
+                const ownerSel = document.getElementById('leadOwnerSelect');
+                if (ownerSel && employees.length > 0) {
+                    ownerSel.innerHTML = '<option value="">-- select --</option>';
+                    employees.forEach(e => {
+                        const o = document.createElement('option');
+                        o.value = e.employee_id;
+                        o.text = `${e.first_name} ${e.last_name}`;
+                        ownerSel.appendChild(o);
+                    });
+                }
+
+                metadataLoaded = true;
+            } catch (err) { }
+        }
+
+        async function loadCompanyProducts() {
+            const container = document.getElementById('companyProductsList');
+            if (!container) return;
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                container.innerHTML = products.length ? '' : '<div class="text-sm text-gray-500 py-4">No products available.</div>';
+                products.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'product-item';
+                    div.textContent = p.product_name || 'Unnamed Product';
+                    div.onclick = () => { window.location.href = `products.html?product_id=${p.product_id}`; };
+                    container.appendChild(div);
+                });
+            } catch (err) { container.innerHTML = '<div class="text-sm text-gray-500 py-4">Unable to load products.</div>'; }
+        }
+
+        function showNotification(message, type) {
+            const n = document.createElement('div');
+            n.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-[2000] transition-all duration-300 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
+            n.innerHTML = `<span class="font-semibold">${message}</span>`;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            loadMetadata();
+            loadCompanyProducts();
+            
+            // Check Admin Status
+            try {
+                const userRes = await fetch('/api/agent-login/me');
+                const userData = await userRes.json();
+                if (userData.success && userData.user && userData.user.id_admin) {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                }
+            } catch (err) { }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const cid = urlParams.get('company_id');
+            if (cid) fetchAndDisplayCompanyData(parseInt(cid, 10));
+        });
+    </script>
+    <script src="/profile.js"></script>
+</body>
+</html>

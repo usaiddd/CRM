@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Company List | Export Support India</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary-navy: #0A1A3A;
+      --primary-gold: #C6A961;
+      --accent-blue: #2D5AA9;
+      --accent-teal: #1A7F7A;
+      --light-bg: #F8FAFC;
+      --table-header: #F1F5F9;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #F1F5F9 0%, #FFFFFF 100%);
+      min-height: 100vh;
+    }
+    
+    .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .navy-gradient {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(2px);
+      border-radius: 28px;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(226, 232, 240, 0.6);
+    }
+    
+    .company-table-container {
+      overflow-x: auto;
+      border-radius: 20px;
+      scroll-behavior: smooth;
+    }
+    
+    .company-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.85rem;
+    }
+    
+    .company-table thead tr {
+      background: var(--table-header);
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .company-table th {
+      padding: 1rem 1rem;
+      font-weight: 700;
+      color: #0F172A;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1.5px solid #E2E8F0;
+      background: #F8FAFC;
+    }
+    
+    .company-table td {
+      padding: 1rem 1rem;
+      border-bottom: 1px solid #EDF2F7;
+      vertical-align: middle;
+      color: #1E293B;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    
+    .company-table tr:hover td {
+      background-color: #FEFCE8;
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #EFF6FF;
+      padding: 0.25rem 0.75rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #1E40AF;
+    }
+    
+    .status-badge.active {
+      background: #E0F2FE;
+      color: #0C4A6E;
+    }
+    
+    .status-badge.client {
+      background: #DCFCE7;
+      color: #166534;
+    }
+    
+    .search-input {
+      transition: all 0.25s ease;
+      border: 1px solid #E2E8F0;
+      background: white;
+      padding-left: 2.5rem;
+    }
+    
+    .search-input:focus {
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 0 3px rgba(198, 169, 97, 0.2);
+      outline: none;
+    }
+    
+    .gold-dot {
+      background: var(--primary-gold);
+    }
+    
+    .btn-outline-navy {
+      border: 1px solid #CBD5E1;
+      background: white;
+      transition: all 0.2s;
+    }
+    
+    .btn-outline-navy:hover {
+      border-color: var(--primary-navy);
+      background: #F8FAFC;
+      transform: translateY(-1px);
+    }
+    
+    .badge-company-type {
+      background: #F1F5F9;
+      border-radius: 20px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    /* Progress Bar Styles */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background-color: #E2E8F0;
+      border-radius: 10px;
+      margin-top: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #C6A961 0%, #D4B57F 100%);
+      border-radius: 10px;
+      transition: width 0.6s ease;
+    }
+
+    .stage-label {
+      font-size: 0.65rem;
+      color: #64748B;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+    
+    .scroll-shadow {
+      scrollbar-width: thin;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Header identical to agent portal style -->
+  <header class="navy-gradient text-white shadow-lg sticky top-0 z-20">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="bg-white/10 backdrop-blur-sm rounded-xl p-2">
+            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-base">DI</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold tracking-wide">DIVIT INTERNATIONAL</p>
+            <p class="text-xs text-gray-200">Global Trade Excellence</p>
+          </div>
+        </div>
+        
+        <div class="text-center hidden md:block">
+          <h1 class="text-xl md:text-2xl font-heading font-bold tracking-tight">COMPANY DIRECTORY</h1>
+          <p class="text-xs text-gray-200 mt-0.5">Export Support India · Master Database</p>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+          <div class="text-right">
+            <p class="text-sm font-semibold tracking-wide">SUNSAI</p>
+            <p class="text-xs text-gray-200">Quality Assurance</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-xl p-2">
+            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-base">SS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 md:px-8 py-10 max-w-[1600px]">
+    <!-- Page header + search & stats -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-5">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0A1A3A]/10 flex items-center justify-center">
+            <i class="fas fa-building text-[#0A1A3A] text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-3xl font-heading font-bold tracking-tight text-gray-900">Registered Companies</h2>
+            <p class="text-gray-500 mt-0.5 text-sm">View, search & manage all client, partner & internal entities</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <div class="relative">
+          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input type="text" id="searchCompanyInput" placeholder="Search by name, brand, city, industry..." 
+                 class="search-input pl-9 pr-4 py-2.5 rounded-xl w-64 md:w-80 text-sm shadow-sm">
+        </div>
+        <div class="flex items-center gap-2 text-sm bg-white/70 px-4 py-2 rounded-xl border border-gray-200">
+          <i class="fas fa-database text-[#C6A961]"></i>
+          <span class="font-medium text-gray-700">Total records:</span>
+          <span id="recordCount" class="font-bold text-gray-900">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GLASS CARD WITH TABLE -->
+    <div class="glass-card p-1 md:p-2 shadow-xl">
+      <div class="company-table-container rounded-2xl">
+        <table class="company-table min-w-[1100px] md:min-w-full">
+          <thead>
+            <tr>
+              <th class="rounded-tl-2xl">#</th>
+              <th>Legal Name / Brand</th>
+              <th>Company Type</th>
+              <th>Industry</th>
+              <th>Category</th>
+              <th>Scale</th>
+              <th>Location (City)</th>
+              <th>Primary Contact Info</th>
+              <th>Status</th>
+              <th class="rounded-tr-2xl">Website / LinkedIn</th>
+            </tr>
+          </thead>
+          <tbody id="companyTableBody">
+            <!-- DYNAMIC JS ROWS WILL BE INJECTED HERE -->
+            <tr class="hover:bg-transparent">
+              <td colspan="10" class="text-center py-12 text-gray-400">
+                <i class="fas fa-spinner fa-spin mr-2"></i> Loading company data...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- No results message (hidden by default) -->
+    <div id="noResultsMsg" class="hidden text-center mt-12 py-8 bg-white/60 rounded-2xl border border-dashed border-gray-300">
+      <i class="fas fa-building-circle-check text-4xl text-gray-300 mb-2"></i>
+      <p class="text-gray-500 font-medium">No companies match your search criteria</p>
+      <button id="clearSearchBtn" class="mt-3 text-sm text-[#C6A961] hover:text-[#0A1A3A] font-semibold transition">
+        <i class="fas fa-undo-alt mr-1"></i> Clear search
+      </button>
+    </div>
+
+    <!-- Quick action footer with return link -->
+    <div class="mt-12 pt-6 border-t border-gray-200 flex flex-wrap justify-between items-center gap-4">
+      <div class="text-sm text-gray-500 flex items-center gap-3">
+        <i class="fas fa-chart-line text-[#1A7F7A]"></i>
+        <span>Last updated: Today · Demo dataset reflects export ecosystem</span>
+      </div>
+      <button onclick="returnToPortal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-all shadow-sm hover:shadow flex items-center gap-2">
+        <i class="fas fa-arrow-left"></i> Return to Agent Portal
+      </button>
+    </div>
+  </main>
+
+  <footer class="bg-white/80 backdrop-blur-sm border-t border-gray-200 mt-16 py-6">
+    <div class="container mx-auto px-6 text-center">
+      <p class="text-sm text-gray-600">© 2025 Export Support India. All Rights Reserved.</p>
+      <p class="text-xs mt-1 text-gray-400">Company Directory Module v2.3 • Professional Records View</p>
+    </div>
+  </footer>
+
+  <script src="/profile.js"></script>
+  <script>
+    // Global variable to store all companies fetched from database
+    let allCompanies = [];
+    let allSalesStages = [];
+
+    // Helper: format company type badge class
+    function getCompanyTypeBadge(type) {
+      const lower = type ? type.toLowerCase() : '';
+      if (lower === 'internal') return '<span class="badge-company-type bg-indigo-50 text-indigo-700"><i class="fas fa-building mr-1"></i>Internal</span>';
+      if (lower === 'client') return '<span class="badge-company-type bg-emerald-50 text-emerald-700"><i class="fas fa-handshake mr-1"></i>Client</span>';
+      if (lower === 'partner') return '<span class="badge-company-type bg-amber-50 text-amber-700"><i class="fas fa-briefcase mr-1"></i>Partner</span>';
+      if (lower === 'lead') return '<span class="badge-company-type bg-purple-50 text-purple-700"><i class="fas fa-filter mr-1"></i>Lead</span>';
+      return '<span class="badge-company-type">'+(type || '—')+'</span>';
+    }
+
+    function getStatusBadge(status) {
+      if (status === 'active') return '<span class="status-badge active"><i class="fas fa-circle text-[10px] text-green-500"></i> Active</span>';
+      if (status === 'inactive') return '<span class="status-badge bg-gray-100 text-gray-600"><i class="fas fa-circle text-[10px] text-gray-400"></i> Inactive</span>';
+      if (status === 'setting up context') return '<span class="status-badge bg-amber-100 text-amber-800"><i class="fas fa-circle text-[10px] text-amber-500"></i> Setting up context</span>';
+      return '<span class="status-badge bg-yellow-50 text-yellow-700"><i class="fas fa-clock"></i> Pending</span>';
+    }
+
+    // Helper: Calculate progress percentage
+    function calculateProgress(stageId) {
+      if (!stageId || !allSalesStages.length) return { percent: 0, label: 'No Stage' };
+      
+      const index = allSalesStages.findIndex(s => s.sales_stage_id === stageId);
+      if (index === -1) return { percent: 0, label: 'Unknown' };
+      
+      const percent = Math.round(((index + 1) / allSalesStages.length) * 100);
+      return { percent, label: allSalesStages[index].stage_name };
+    }
+
+    // Render table rows based on filtered companies
+    function renderCompanyTable(companies) {
+      const tbody = document.getElementById('companyTableBody');
+      const recordCountSpan = document.getElementById('recordCount');
+      const noResultsDiv = document.getElementById('noResultsMsg');
+      
+      if (!companies.length) {
+        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-12 text-gray-400 bg-white/50"><i class="fas fa-search-minus text-3xl mb-2 block"></i> No matching company records found</td></tr>`;
+        recordCountSpan.innerText = '0';
+        noResultsDiv.classList.remove('hidden');
+        return;
+      }
+      
+      noResultsDiv.classList.add('hidden');
+      recordCountSpan.innerText = companies.length;
+      
+      let html = '';
+      companies.forEach((comp, idx) => {
+        // Location display: city + state snippet
+        const locationStr = `${comp.city || '—'}, ${comp.state?.slice(0, 12) || ''} ${comp.country ? '| '+comp.country : ''}`;
+        // Contact info (primary email + phone)
+        const contactHtml = `
+          <div class="text-xs space-y-1">
+            <div class="flex items-center gap-1"><i class="fas fa-envelope text-gray-400 w-3"></i> <span class="truncate max-w-[150px]">${comp.email_primary || '—'}</span></div>
+            <div class="flex items-center gap-1"><i class="fas fa-phone-alt text-gray-400 w-3"></i> ${comp.phone_primary || '—'}</div>
+          </div>
+        `;
+        
+        const websiteHtml = comp.website ? `<a href="${comp.website}" target="_blank" class="text-[#2D5AA9] hover:underline text-xs flex items-center gap-1 truncate"><i class="fas fa-globe"></i> ${comp.website.replace(/^https?:\/\//, '').slice(0, 25)}</a>` : '—';
+        const linkedinHtml = comp.linkedin_url ? `<a href="${comp.linkedin_url}" target="_blank" class="text-[#0077B5] text-xs flex items-center gap-1 mt-1"><i class="fab fa-linkedin"></i> Profile</a>` : '';
+        
+        // Progress Bar Calculation
+        const { percent, label } = calculateProgress(comp.sales_stage_id);
+
+        // Auto convert company type to 'client' if 100%, otherwise 'lead'
+        let targetType = comp.company_type;
+        if (!targetType || targetType === 'lead' || targetType === 'client') {
+          targetType = (percent === 100) ? 'client' : 'lead';
+          if (comp.company_type !== targetType) {
+            fetch(`/api/companies/${comp.company_id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ company_type: targetType })
+            }).catch(e => console.error('Auto-conversion update failed:', e));
+            comp.company_type = targetType;
+          }
+        }
+        
+        html += `
+          <tr class="border-b border-gray-100 transition-all cursor-pointer hover:bg-blue-50" onclick="openCompanyRecords(${comp.company_id})">
+            <td class="font-semibold text-gray-500">${comp.company_id || '—'}</td>
+            <td class="py-4">
+              <div class="font-bold text-gray-800">${escapeHtml(comp.legal_name || comp.brand)}</div>
+              <div class="text-xs text-gray-400 mt-0.5">${comp.brand && comp.brand !== comp.legal_name ? '🏷️ '+escapeHtml(comp.brand) : ''}</div>
+              
+              <!-- Sales Stage Progress Bar -->
+              <div class="mt-3 max-w-[200px]">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="stage-label">${label}</span>
+                  <span class="text-[10px] font-bold text-[#C6A961]">${percent}%</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar" style="width: ${percent}%"></div>
+                </div>
+              </div>
+            </td>
+            <td>${getCompanyTypeBadge(comp.company_type)}</td>
+            <td class="text-sm">${comp.industry || '—'}</td>
+            <td class="text-sm">${comp.category || '—'}</td>
+            <td class="text-sm">${comp.scale || '—'}</td>
+            <td class="text-sm max-w-[180px] whitespace-normal">${locationStr.length > 35 ? locationStr.slice(0, 32)+'…' : locationStr}</td>
+            <td class="text-left">${contactHtml}</td>
+            <td>${getStatusBadge(comp.status)}</td>
+            <td class="text-left">
+              ${websiteHtml}
+              ${linkedinHtml}
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+    
+    // Simple XSS protection
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+        return c;
+      });
+    }
+    
+    // Filter logic: search across legal_name, brand, city, industry, category, company_type
+    function filterCompanies(searchTerm) {
+      if (!searchTerm.trim()) return [...allCompanies];
+      const term = searchTerm.trim().toLowerCase();
+      return allCompanies.filter(company => {
+        return (
+          (company.legal_name && company.legal_name.toLowerCase().includes(term)) ||
+          (company.brand && company.brand.toLowerCase().includes(term)) ||
+          (company.city && company.city.toLowerCase().includes(term)) ||
+          (company.industry && company.industry.toLowerCase().includes(term)) ||
+          (company.category && company.category.toLowerCase().includes(term)) ||
+          (company.company_type && company.company_type.toLowerCase().includes(term)) ||
+          (company.website && company.website.toLowerCase().includes(term)) ||
+          (company.status && company.status.toLowerCase().includes(term))
+        );
+      });
+    }
+    
+    // Global search handler
+    let currentSearchValue = '';
+    function updateTableFromSearch() {
+      const searchInput = document.getElementById('searchCompanyInput');
+      const searchVal = searchInput.value;
+      currentSearchValue = searchVal;
+      const filtered = filterCompanies(searchVal);
+      renderCompanyTable(filtered);
+    }
+    
+    // Clear search function
+    function resetSearch() {
+      const searchInput = document.getElementById('searchCompanyInput');
+      searchInput.value = '';
+      currentSearchValue = '';
+      renderCompanyTable(allCompanies);
+      const noResultsDiv = document.getElementById('noResultsMsg');
+      noResultsDiv.classList.add('hidden');
+    }
+
+    // Fetch companies from API
+    async function loadCompanies() {
+      try {
+        // First, fetch all metadata (industries, categories, and sales stages)
+        const [industriesRes, categoriesRes, stagesRes] = await Promise.all([
+          fetch('/api/metadata/industries'),
+          fetch('/api/metadata/categories'),
+          fetch('/api/metadata/sales_stages')
+        ]);
+        
+        let industriesMap = {};
+        let categoriesMap = {};
+        
+        if (industriesRes.ok) {
+          const industries = await industriesRes.json();
+          industries.forEach(ind => {
+            industriesMap[ind.industry_id] = ind.industry_name;
+          });
+        }
+        
+        if (categoriesRes.ok) {
+          const categories = await categoriesRes.json();
+          categories.forEach(cat => {
+            categoriesMap[cat.category_id] = cat.category_name;
+          });
+        }
+
+        if (stagesRes.ok) {
+          allSalesStages = await stagesRes.json();
+        }
+        
+        const response = await fetch('/api/companies');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const companies = await response.json();
+        allCompanies = companies;
+        
+        // Fetch address, contact information, and engagement for all companies in parallel
+        await Promise.all(allCompanies.map(async (company, i) => {
+          try {
+            const [detailsRes, engagementRes] = await Promise.all([
+              fetch(`/api/companies/${company.company_id}`),
+              fetch(`/api/client_engagement/company/${company.company_id}`)
+            ]);
+
+            if (detailsRes.ok) {
+              const details = await detailsRes.json();
+              // Merge details into the company object
+              allCompanies[i] = {
+                ...allCompanies[i],
+                ...details
+              };
+              
+              // Map industry_id and category_id to their names
+              if (allCompanies[i].industry_id && industriesMap[allCompanies[i].industry_id]) {
+                allCompanies[i].industry = industriesMap[allCompanies[i].industry_id];
+              }
+              if (allCompanies[i].category_id && categoriesMap[allCompanies[i].category_id]) {
+                allCompanies[i].category = categoriesMap[allCompanies[i].category_id];
+              }
+            }
+
+            if (engagementRes.ok) {
+              const engagement = await engagementRes.json();
+              if (engagement) {
+                allCompanies[i].sales_stage_id = engagement.sales_stage_id;
+              }
+            }
+          } catch (err) {
+            console.error('Error fetching details for company:', company.company_id, err);
+          }
+        }));
+        
+        // Initial render with all companies
+        renderCompanyTable(allCompanies);
+        
+        // Setup event listeners after data is loaded
+        setupEventListeners();
+      } catch (error) {
+        console.error('Failed to load companies:', error);
+        // Show user-friendly error message
+        const tbody = document.getElementById('companyTableBody');
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="text-center py-12">
+              <i class="fas fa-exclamation-circle text-red-500 text-3xl mb-3 block"></i>
+              <p class="text-gray-600 font-medium">Unable to load companies from database</p>
+              <p class="text-gray-400 text-sm mt-1">${error.message}</p>
+              <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                <i class="fas fa-redo mr-2"></i> Reload
+              </button>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      const searchInput = document.getElementById('searchCompanyInput');
+      searchInput.addEventListener('input', (e) => {
+        updateTableFromSearch();
+      });
+      
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', (e) => {
+          resetSearch();
+        });
+      }
+      
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') updateTableFromSearch();
+      });
+      
+      // Tooltip effect on table hover
+      const tableWrapper = document.querySelector('.company-table-container');
+      if (tableWrapper) {
+        tableWrapper.classList.add('scroll-shadow');
+      }
+    }
+    
+    // Load companies when DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCompanies();
+    });
+
+    // Open company records page with company ID
+    function openCompanyRecords(companyId) {
+      window.location.href = `company_records.html?company_id=${companyId}`;
+    }
+  </script>
+  <style>
+    /* Custom scroll & nice touches */
+    .company-table-container::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .company-table-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .company-table-container::-webkit-scrollbar-thumb {
+      background: #C6A961;
+      border-radius: 10px;
+    }
+    td i, th i {
+      font-size: 0.7rem;
+    }
+    .company-table td:first-child, .company-table th:first-child {
+      padding-left: 1.25rem;
+    }
+    .company-table td:last-child, .company-table th:last-child {
+      padding-right: 1.25rem;
+    }
+    .glass-card {
+      transition: all 0.2s;
+    }
+  </style>
+</body>
+</html>

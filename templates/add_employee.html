@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Employee - Agent Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary-navy: #0A1A3A;
+      --primary-gold: #C6A961;
+      --light-bg: #F8FAFC;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-bg);
+      color: #1E293B;
+      min-height: 100vh;
+    }
+    
+    .font-heading {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .navy-gradient {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+    }
+    
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      background-color: white;
+      font-size: 0.95rem;
+    }
+    
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 0 3px rgba(198, 169, 97, 0.1);
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1E293B;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .required-star {
+      color: #EA580C;
+      margin-left: 0.25rem;
+    }
+    
+    .section-heading {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--primary-gold);
+      display: inline-block;
+    }
+    
+    .btn-save {
+      background: var(--primary-navy);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-save:hover {
+      background: #1A2C4F;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(10, 26, 58, 0.15);
+    }
+    
+    .btn-cancel {
+      background: white;
+      color: #475569;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      border: 1px solid #E2E8F0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-cancel:hover {
+      background: #F8FAFC;
+      border-color: var(--primary-gold);
+    }
+    
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: var(--primary-gold);
+      margin: 1rem auto;
+    }
+    
+    .logo-container {
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem;
+    }
+    
+    @media (max-width: 1024px) {
+      .grid-2col {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="navy-gradient text-white py-5 shadow-lg">
+    <div class="container mx-auto px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="logo-container">
+            <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-md">DI</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold tracking-wide">DIVIT INTERNATIONAL</p>
+            <p class="text-xs text-gray-300">Global Trade Excellence</p>
+          </div>
+        </div>
+        <div class="text-center">
+          <h1 class="text-2xl font-heading font-bold tracking-tight">ADD NEW EMPLOYEE</h1>
+          <p class="text-xs text-gray-300 mt-1">Complete Employee Registration</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <p class="text-sm font-semibold tracking-wide">SUNSAI</p>
+            <p class="text-xs text-gray-300">Quality Assurance</p>
+          </div>
+          <div class="logo-container">
+            <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-md">SS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content - Full width, no boxes -->
+  <main class="flex-1 py-12">
+    <div class="container mx-auto px-8 max-w-7xl">
+      
+      <!-- Page Title -->
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-heading font-bold text-gray-900">Employee Information</h2>
+        <div class="divider"></div>
+        <p class="text-gray-500 max-w-2xl mx-auto">Fill in the details below to register a new employee in the system</p>
+      </div>
+
+      <form id="addEmployeeForm">
+        <!-- SECTION 1: Personal Information (matches employee table columns) -->
+        <div class="mb-12">
+          <h3 class="section-heading">Personal Information</h3>
+          <div class="grid-2col mt-6">
+            <div>
+              <label class="form-label">First Name <span class="required-star">*</span></label>
+              <input type="text" class="form-input" name="first_name" placeholder="Enter first name">
+            </div>
+            <div>
+              <label class="form-label">Middle Name</label>
+              <input type="text" class="form-input" name="middle_name" placeholder="Enter middle name (optional)">
+            </div>
+            <div>
+              <label class="form-label">Last Name <span class="required-star">*</span></label>
+              <input type="text" class="form-input" name="last_name" placeholder="Enter last name">
+            </div>
+            <div>
+              <label class="form-label">Aadhaar Number</label>
+              <input type="text" class="form-input" name="aadhaar_number" placeholder="12-digit Aadhaar (unique)" maxlength="12">
+            </div>
+            <div>
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-input" name="date_of_birth">
+            </div>
+            <div>
+              <label class="form-label">Blood Group</label>
+              <select class="form-select" name="blood_group">
+                <option value="">Select Blood Group</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Employment Details (matches employee table columns) -->
+        <div class="mb-12">
+          <h3 class="section-heading">Employment Details</h3>
+          <div class="grid-2col mt-6">
+            <div>
+              <label class="form-label">Company (Employer) <span class="required-star">*</span></label>
+              <select class="form-select" name="company_id">
+                <option value="">Select Company</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Department</label>
+              <select class="form-select" name="department_id">
+                <option value="">Select Department</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Designation</label>
+              <select class="form-select" name="designation_id">
+                <option value="">Select Designation</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Date of Joining</label>
+              <input type="date" class="form-input" name="date_of_joining">
+            </div>
+            <div>
+              <label class="form-label">Date of Resigning</label>
+              <input type="date" class="form-input" name="date_of_resigning">
+            </div>
+            <div>
+              <label class="form-label">Last Working Date</label>
+              <input type="date" class="form-input" name="last_working_date">
+            </div>
+            <div>
+              <label class="form-label">Employee Status</label>
+              <select class="form-select" name="status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="on_leave">On Leave</option>
+                <option value="terminated">Terminated</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Contact Details (matches employee_contact table columns) -->
+        <div class="mb-12">
+          <h3 class="section-heading">Contact Details</h3>
+          <div class="grid-2col mt-6">
+            <div>
+              <label class="form-label">Primary Mobile <span class="required-star">*</span></label>
+              <input type="tel" class="form-input" name="mobile_primary" placeholder="+91 XXXXXXXXXX">
+            </div>
+            <div>
+              <label class="form-label">Secondary Mobile</label>
+              <input type="tel" class="form-input" name="mobile_secondary" placeholder="Alternate mobile number">
+            </div>
+            <div>
+              <label class="form-label">Primary Email <span class="required-star">*</span></label>
+              <input type="email" class="form-input" name="email_primary" placeholder="employee@company.com">
+            </div>
+            <div>
+              <label class="form-label">Secondary Email</label>
+              <input type="email" class="form-input" name="email_secondary" placeholder="Alternate email">
+            </div>
+            <div>
+              <label class="form-label">Home Phone</label>
+              <input type="tel" class="form-input" name="home_phone" placeholder="Landline with area code">
+            </div>
+            <div class="col-span-full">
+              <label class="form-label">Current Address</label>
+              <textarea class="form-textarea" name="current_address" rows="2" placeholder="Street, City, State, Pincode"></textarea>
+            </div>
+            <div class="col-span-full">
+              <label class="form-label">Permanent Address</label>
+              <textarea class="form-textarea" name="permanent_address" rows="2" placeholder="Full permanent address"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: System Access & Login (matches emp_login and emplog tables) -->
+        <div class="mb-12">
+          <h3 class="section-heading">System Access & Login</h3>
+          <div class="grid-2col mt-6">
+            <div>
+              <label class="form-label">Username (Login ID) <span class="required-star">*</span></label>
+              <input type="text" class="form-input" name="user_login" placeholder="Unique username for portal access">
+            </div>
+            <div>
+              <label class="form-label">Password <span class="required-star">*</span></label>
+              <input type="password" class="form-input" name="password" placeholder="Secure password (will be hashed)">
+            </div>
+            <div>
+              <label class="form-label">Confirm Password</label>
+              <input type="password" class="form-input" name="confirm_password" placeholder="Re-enter password">
+            </div>
+            <div>
+              <label class="form-label">Admin Privileges</label>
+              <select class="form-select" name="id_admin">
+                <option value="false">No - Standard User</option>
+                <option value="true">Yes - Admin User</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-center gap-6 mt-10 pt-6 border-t border-gray-200">
+          <button type="button" onclick="returnToPortal()" class="btn-cancel">
+            Cancel
+          </button>
+          <button type="button" class="btn-save" id="saveButton">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+              </svg>
+              Save Employee Record
+            </div>
+          </button>
+        </div>
+      </form>
+
+      <!-- Back Link -->
+      <div class="mt-8 text-center">
+        <button onclick="returnToPortal()" class="text-gray-400 hover:text-gray-600 text-sm flex items-center justify-center gap-1 mx-auto transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Admin Portal
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white py-6 border-t border-gray-200 mt-auto">
+    <div class="container mx-auto px-8">
+      <div class="text-center text-gray-500 text-sm">
+        <p>© 2025 Export Support India. All Rights Reserved.</p>
+        <p class="text-xs mt-1 text-gray-400">Add Employee • Employee Management Module</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Dynamic Data Loading and Form Submission -->
+  <script>
+    // Load departments and designations dynamically on page load
+    async function loadDropdownData() {
+      try {
+        // Load companies
+        const companiesRes = await fetch('/api/companies');
+        if (companiesRes.ok) {
+          const companies = await companiesRes.json();
+          const companySelect = document.querySelector('select[name="company_id"]');
+          companies.forEach(company => {
+            const option = document.createElement('option');
+            option.value = company.company_id;
+            option.textContent = company.legal_name || company.brand || `Company ${company.company_id}`;
+            companySelect.appendChild(option);
+          });
+        }
+
+        // Load departments
+        const departmentsRes = await fetch('/api/metadata/departments');
+        if (departmentsRes.ok) {
+          const departments = await departmentsRes.json();
+          const deptSelect = document.querySelector('select[name="department_id"]');
+          departments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept.department_id;
+            option.textContent = dept.name;
+            deptSelect.appendChild(option);
+          });
+        }
+
+        // Load designations
+        const designationsRes = await fetch('/api/metadata/designations');
+        if (designationsRes.ok) {
+          const designations = await designationsRes.json();
+          const desgSelect = document.querySelector('select[name="designation_id"]');
+          designations.forEach(desg => {
+            const option = document.createElement('option');
+            option.value = desg.designation_id;
+            option.textContent = desg.name;
+            desgSelect.appendChild(option);
+          });
+        }
+      } catch (err) {
+      }
+    }
+
+    // Call on page load
+    document.addEventListener('DOMContentLoaded', loadDropdownData);
+
+    document.getElementById('saveButton').addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const form = document.getElementById('addEmployeeForm');
+      const formData = new FormData(form);
+      
+      // Collect form data into an object
+      const employeeData = {};
+      for (let [key, value] of formData.entries()) {
+        employeeData[key] = value;
+      }
+      
+      // Validate required fields
+      if (!employeeData.first_name || !employeeData.first_name.trim()) {
+        alert('First Name is required');
+        return;
+      }
+      if (!employeeData.last_name || !employeeData.last_name.trim()) {
+        alert('Last Name is required');
+        return;
+      }
+      if (!employeeData.mobile_primary || !employeeData.mobile_primary.trim()) {
+        alert('Primary Mobile is required');
+        return;
+      }
+      if (!employeeData.email_primary || !employeeData.email_primary.trim()) {
+        alert('Primary Email is required');
+        return;
+      }
+      if (!employeeData.user_login || !employeeData.user_login.trim()) {
+        alert('Username is required');
+        return;
+      }
+      if (!employeeData.password || !employeeData.password.trim()) {
+        alert('Password is required');
+        return;
+      }
+      if (employeeData.password !== employeeData.confirm_password) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      // Show loading state
+      this.disabled = true;
+      this.textContent = 'Saving Employee...';
+      
+      // Send data to backend API
+      fetch('/api/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(employeeData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => {
+            throw new Error(err.error || 'Failed to create employee');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert(`✅ Employee Created Successfully!\n\nEmployee ID: ${data.employee_id}\nName: ${data.employee_name}\nUsername: ${data.user_login}\n\nThe employee has been registered in the system.`);
+        
+        // Reset form
+        form.reset();
+        
+        // Redirect to admin panel after 2 seconds
+        setTimeout(() => {
+          returnToPortal();
+        }, 2000);
+      })
+      .catch(err => {
+        alert(`❌ Error Creating Employee:\n\n${err.message}`);
+        
+        // Re-enable button
+        this.disabled = false;
+        this.innerHTML = `<div class="flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+          </svg>
+          Save Employee Record
+        </div>`;
+      });
+    });
+  </script>
+  <script src="/profile.js"></script>
+</body>
+</html>

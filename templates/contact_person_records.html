@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Person Management - Export Support CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-navy: #0A1A3A;
+            --primary-gold: #C6A961;
+            --accent-blue: #2D5AA9;
+            --accent-teal: #1A7F7A;
+            --light-bg: #F8FAFC;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: #1E293B;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navy-gradient {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%);
+        }
+        
+        .section-header {
+            color: var(--primary-navy);
+            border-left: 4px solid var(--primary-gold);
+            padding-left: 1rem;
+        }
+        
+        .form-input {
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 3px rgba(10, 26, 58, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-navy);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1A2C4F;
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background-color: var(--accent-teal);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            background-color: #166C67;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background-color: #64748B;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .avatar-circle {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-navy);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 600;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 2px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #F0F9FF;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #BAE6FD;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Navbar -->
+    <header class="navy-gradient text-white py-4 px-8 flex-shrink-0">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold">👤</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-heading font-bold">Contact Records Hub</h1>
+                    <p class="text-sm text-white/80">Full Database Synchronization</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="returnToPortal()" class="px-4 py-2 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+                    ← Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area - Full Height -->
+    <div class="flex-1 p-6 overflow-y-auto custom-scrollbar">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-2xl font-heading font-bold section-header text-navy-900">Manage Contact Information</h2>
+                    <p class="text-gray-500 text-sm ml-5 mt-1">Search, view, and update complete contact profiles</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="contactRecordsBtn" class="btn-success px-6 py-2 rounded-lg text-sm font-semibold shadow-md">Contact Records</button>
+                    <button id="searchBtn" class="btn-primary px-6 py-2 rounded-lg text-sm font-semibold shadow-md">🔍 Search Records</button>
+                </div>
+            </div>
+
+            <form id="contactForm">
+                <input type="hidden" id="contact_id">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- LEFT COLUMN: Identity & Employment -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Identity -->
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Core Identity</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Salutation</label>
+                                    <select id="salutation" class="form-input w-full px-4 py-2 rounded-lg bg-white">
+                                        <option value="Mr.">Mr.</option>
+                                        <option value="Ms.">Ms.</option>
+                                        <option value="Mrs.">Mrs.</option>
+                                        <option value="Dr.">Dr.</option>
+                                    </select>
+                                </div>
+                                <div class="checkbox-group self-end h-[42px]">
+                                    <input type="checkbox" id="active" class="w-4 h-4 accent-blue-600" checked>
+                                    <label for="active" class="text-xs font-bold text-blue-700 uppercase">Active Status</label>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">First Name *</label>
+                                    <input type="text" id="first_name" class="form-input w-full px-4 py-2 rounded-lg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Middle Name</label>
+                                    <input type="text" id="middle_name" class="form-input w-full px-4 py-2 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Last Name *</label>
+                                    <input type="text" id="last_name" class="form-input w-full px-4 py-2 rounded-lg" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employment -->
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Professional Linkage</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Linked Company *</label>
+                                    <select id="company_id" class="form-input w-full px-4 py-2 rounded-lg" required>
+                                        <option value="">-- Select Company --</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Designation</label>
+                                    <input type="text" id="designation" class="form-input w-full px-4 py-2 rounded-lg" placeholder="e.g. CEO, Sales Head">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Department</label>
+                                    <input type="text" id="department" class="form-input w-full px-4 py-2 rounded-lg" placeholder="e.g. Procurement">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">LinkedIn URL</label>
+                                    <input type="url" id="linkedin_url" class="form-input w-full px-4 py-2 rounded-lg text-blue-600 font-medium" placeholder="https://linkedin.com/in/...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Additional Notes</h3>
+                            <textarea id="notes" class="form-input w-full px-4 py-3 rounded-lg min-h-[120px]" placeholder="Capture interaction details or personal preferences..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: Communication & System -->
+                    <div class="space-y-6">
+                        <!-- Communication -->
+                        <div class="glass-panel p-6 rounded-2xl">
+                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Communication Channels</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Primary Mobile *</label>
+                                    <input type="tel" id="mobile_primary" class="form-input w-full px-4 py-2 rounded-lg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Secondary Mobile</label>
+                                    <input type="tel" id="mobile_secondary" class="form-input w-full px-4 py-2 rounded-lg">
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="flex-1">
+                                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Direct Line</label>
+                                        <input type="tel" id="direct_number" class="form-input w-full px-4 py-2 rounded-lg">
+                                    </div>
+                                    <div class="w-24">
+                                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Ext.</label>
+                                        <input type="text" id="extension" class="form-input w-full px-4 py-2 rounded-lg">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Primary Email *</label>
+                                    <input type="email" id="email_primary" class="form-input w-full px-4 py-2 rounded-lg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Secondary Email</label>
+                                    <input type="email" id="email_secondary" class="form-input w-full px-4 py-2 rounded-lg">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Info -->
+                        <div class="space-y-4">
+                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">System Insights</h3>
+                            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">First Contacted</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <input type="date" id="first_contact" class="form-input w-full px-4 py-2 rounded-lg text-sm">
+                                        <input type="text" id="f_contact_mode" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Mode">
+                                    </div>
+                                </div>
+                                <div class="pt-2 border-t border-gray-100">
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Last Interaction</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <input type="date" id="last_contact" class="form-input w-full px-4 py-2 rounded-lg text-sm">
+                                        <input type="text" id="l_contact_mode" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Mode">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="flex justify-between items-center mt-8 pb-12">
+                    <button type="button" id="clearBtn" class="btn-secondary px-8 py-3 rounded-xl font-bold">Reset Form</button>
+                    <div class="flex space-x-3">
+                        <button type="button" id="updateBtn" class="btn-primary px-10 py-3 rounded-xl font-bold shadow-lg shadow-blue-900/20">💾 Save Changes</button>
+                        <button type="button" onclick="window.location.href='add_contact_person.html'" class="btn-success px-10 py-3 rounded-xl font-bold shadow-lg shadow-teal-900/20">➕ Create New Contact</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Records Modal -->
+    <div id="searchModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-100 flex flex-col gap-4 bg-gray-50">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy-900">Search Records</h3>
+                        <p class="text-xs text-gray-500">Enter a name or email to find a contact</p>
+                    </div>
+                    <button onclick="closeSearchModal()" class="text-gray-400 hover:text-red-500 transition-colors text-2xl">&times;</button>
+                </div>
+                <div class="relative">
+                    <input type="text" id="modalSearchInput" class="form-input w-full pl-10 pr-4 py-3 rounded-xl text-sm" placeholder="Type name, email, or company...">
+                    <span class="absolute left-4 top-3.5 text-gray-400">🔍</span>
+                </div>
+            </div>
+            <div id="searchResults" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
+                <!-- Results populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const contactForm = document.getElementById('contactForm');
+        const searchBtn = document.getElementById('searchBtn');
+        const updateBtn = document.getElementById('updateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const companySelect = document.getElementById('company_id');
+        const modalSearchInput = document.getElementById('modalSearchInput');
+        const contactRecordsBtn = document.getElementById('contactRecordsBtn');
+        
+        let allContacts = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            clearAllFields();
+            await loadCompaniesDropdown();
+            fetchAllContacts();
+
+            if (contactRecordsBtn) {
+                contactRecordsBtn.addEventListener('click', () => {
+                    const contactId = document.getElementById('contact_id').value;
+                    if (contactId) {
+                        window.location.href = `contact_records.html?contact_id=${contactId}`;
+                    } else {
+                        alert('Please first select a contact person.');
+                    }
+                });
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const cid = urlParams.get('contact_id');
+            if (cid) loadAndPopulateContact(cid);
+        });
+
+        async function fetchAllContacts() {
+            try {
+                const res = await fetch('/api/contacts');
+                allContacts = await res.json();
+            } catch (err) { }
+        }
+
+        async function loadCompaniesDropdown() {
+            try {
+                const res = await fetch('/api/companies');
+                const companies = await res.json();
+                companies.sort((a,b) => (a.legal_name || '').localeCompare(b.legal_name || ''));
+                companies.forEach(company => {
+                    const opt = document.createElement('option');
+                    opt.value = company.company_id;
+                    opt.textContent = company.legal_name;
+                    companySelect.appendChild(opt);
+                });
+            } catch (err) { }
+        }
+
+        searchBtn.addEventListener('click', async () => {
+            document.getElementById('searchModal').classList.remove('hidden');
+            document.getElementById('searchModal').classList.add('flex');
+            modalSearchInput.value = '';
+            
+            if (allContacts.length === 0) {
+                document.getElementById('searchResults').innerHTML = '<div class="text-center py-12 text-gray-400 italic">Fetching records...</div>';
+                await fetchAllContacts();
+            }
+            displaySearchResults(allContacts);
+            setTimeout(() => modalSearchInput.focus(), 100);
+        });
+
+        modalSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                displaySearchResults(allContacts);
+                return;
+            }
+            const filtered = allContacts.filter(c => 
+                (c.first_name && c.first_name.toLowerCase().includes(query)) ||
+                (c.last_name && c.last_name.toLowerCase().includes(query)) ||
+                (c.email_primary && c.email_primary.toLowerCase().includes(query)) ||
+                (c.company_name && c.company_name.toLowerCase().includes(query)) ||
+                (c.contact_id && c.contact_id.toString().includes(query))
+            );
+            displaySearchResults(filtered);
+        });
+
+        function displaySearchResults(results) {
+            const container = document.getElementById('searchResults');
+            container.innerHTML = '';
+            if (results.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-400 italic">No matching contacts found.</div>';
+            } else {
+                results.forEach(contact => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center p-4 border border-gray-100 rounded-xl hover:bg-blue-50 cursor-pointer transition-all group';
+                    div.onclick = () => {
+                        populateContactForm(contact);
+                        closeSearchModal();
+                    };
+                    const initials = `${contact.first_name?.[0] || ''}${contact.last_name?.[0] || ''}`.toUpperCase();
+                    div.innerHTML = `
+                        <div class="avatar-circle mr-4 group-hover:bg-blue-600 transition-colors text-sm">${initials}</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-gray-800">${contact.first_name} ${contact.last_name}</div>
+                            <div class="text-xs text-gray-500 uppercase font-semibold">${contact.designation || 'Position N/A'} • ${contact.company_name || 'Individual'}</div>
+                        </div>
+                        <div class="text-blue-500 font-bold text-xs opacity-0 group-hover:opacity-100">Select →</div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.add('hidden');
+            document.getElementById('searchModal').classList.remove('flex');
+        }
+
+        async function loadAndPopulateContact(id) {
+            try {
+                const res = await fetch(`/api/contacts/${id}`);
+                const contact = await res.json();
+                if (contact && !contact.error) {
+                    populateContactForm(contact);
+                }
+            } catch (err) { } 
+
+        }
+
+        function populateContactForm(contact) {
+            document.getElementById('contact_id').value = contact.contact_id;
+            document.getElementById('salutation').value = contact.salutation || 'Mr.';
+            document.getElementById('active').checked = contact.active !== false;
+            document.getElementById('first_name').value = contact.first_name || '';
+            document.getElementById('middle_name').value = contact.middle_name || '';
+            document.getElementById('last_name').value = contact.last_name || '';
+            document.getElementById('company_id').value = contact.company_id || '';
+            document.getElementById('designation').value = contact.designation || '';
+            document.getElementById('department').value = contact.department || '';
+            document.getElementById('linkedin_url').value = contact.linkedin_url || '';
+            document.getElementById('notes').value = contact.notes || '';
+
+            // Communication Info
+            document.getElementById('mobile_primary').value = contact.mobile_primary || '';
+            document.getElementById('mobile_secondary').value = contact.mobile_secondary || '';
+            document.getElementById('direct_number').value = contact.direct_number || '';
+            document.getElementById('extension').value = contact.extension || '';
+            document.getElementById('email_primary').value = contact.email_primary || '';
+            document.getElementById('email_secondary').value = contact.email_secondary || '';
+
+            // System Insights
+            const formatDate = (d) => {
+                if (!d) return '';
+                const date = new Date(d);
+                return date.toISOString().split('T')[0];
+            };
+            document.getElementById('first_contact').value = formatDate(contact.first_contact);
+            document.getElementById('f_contact_mode').value = contact.f_contact_mode || '';
+            document.getElementById('last_contact').value = formatDate(contact.last_contact);
+            document.getElementById('l_contact_mode').value = contact.l_contact_mode || '';
+        }
+
+        updateBtn.addEventListener('click', async () => {
+            const id = document.getElementById('contact_id').value;
+            if (!id) { alert('Please select a contact first.'); return; }
+
+            const payload = {
+                salutation: document.getElementById('salutation').value,
+                active: document.getElementById('active').checked,
+                first_name: document.getElementById('first_name').value,
+                middle_name: document.getElementById('middle_name').value,
+                last_name: document.getElementById('last_name').value,
+                company_id: document.getElementById('company_id').value || null,
+                designation: document.getElementById('designation').value,
+                department: document.getElementById('department').value,
+                linkedin_url: document.getElementById('linkedin_url').value,
+                notes: document.getElementById('notes').value,
+                contact_contact: {
+                    mobile_primary: document.getElementById('mobile_primary').value,
+                    mobile_secondary: document.getElementById('mobile_secondary').value,
+                    direct_number: document.getElementById('direct_number').value,
+                    extension: document.getElementById('extension').value,
+                    email_primary: document.getElementById('email_primary').value,
+                    email_secondary: document.getElementById('email_secondary').value
+                },
+                contact_details: {
+                    first_contact: document.getElementById('first_contact').value || null,
+                    last_contact: document.getElementById('last_contact').value || null,
+                    f_contact_mode: document.getElementById('f_contact_mode').value || null,
+                    l_contact_mode: document.getElementById('l_contact_mode').value || null
+                }
+            };
+
+            try {
+                const res = await fetch(`/api/contacts/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data && !data.error) {
+                    alert('Changes saved to database successfully!');
+                    fetchAllContacts(); // Refresh local cache
+                }
+                else alert('Save failed: ' + (data.error || 'Unknown error'));
+            } catch (err) { alert('Network error during save.'); }
+        });
+
+        clearBtn.addEventListener('click', clearAllFields);
+
+        function clearAllFields() {
+            contactForm.reset();
+            document.getElementById('contact_id').value = '';
+            document.getElementById('first_contact').value = '';
+            document.getElementById('f_contact_mode').value = '';
+            document.getElementById('last_contact').value = '';
+            document.getElementById('l_contact_mode').value = '';
+        }
+    </script>
+    <script src="/profile.js"></script>
+</body>
+</html>

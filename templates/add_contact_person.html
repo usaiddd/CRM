@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Contact Person - Export Support CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-navy: #0A1A3A;
+            --primary-gold: #C6A961;
+            --accent-blue: #2D5AA9;
+            --accent-teal: #1A7F7A;
+            --light-bg: #F8FAFC;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: #1E293B;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .font-heading { font-family: 'Montserrat', sans-serif; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navy-gradient { background: linear-gradient(135deg, var(--primary-navy) 0%, #1A2C4F 100%); }
+        
+        .section-header {
+            color: var(--primary-navy);
+            border-left: 4px solid var(--primary-gold);
+            padding-left: 1rem;
+        }
+        
+        .form-input {
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 3px rgba(10, 26, 58, 0.1);
+        }
+        
+        .btn-primary { background-color: var(--primary-navy); color: white; transition: all 0.3s ease; }
+        .btn-primary:hover { background-color: #1A2C4F; transform: translateY(-1px); }
+        
+        .btn-success { background-color: var(--accent-teal); color: white; transition: all 0.3s ease; }
+        .btn-success:hover { background-color: #166C67; transform: translateY(-1px); }
+        
+        .btn-secondary { background-color: #64748B; color: white; transition: all 0.3s ease; }
+        .btn-secondary:hover { background-color: #475569; }
+
+        .checkbox-group {
+            display: flex; align-items: center; gap: 8px;
+            background: #F0F9FF; padding: 8px 12px; border-radius: 8px; border: 1px solid #BAE6FD;
+        }
+
+        /* Loading State */
+        .btn-loading { opacity: 0.7; cursor: not-allowed; }
+        .spinner {
+            width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Notification */
+        .notification {
+            position: fixed; top: 24px; right: 24px; padding: 16px 20px;
+            border-radius: 12px; background: white; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            display: flex; align-items: center; gap: 12px; transform: translateX(400px);
+            opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000; min-width: 320px; border-left: 4px solid;
+        }
+        .notification.show { transform: translateX(0); opacity: 1; }
+        .notification.success { border-left-color: #10b981; }
+        .notification.error { border-left-color: #ef4444; }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Navbar -->
+    <header class="navy-gradient text-white py-4 px-8 flex-shrink-0">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">+</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-heading font-bold">Add Contact Person</h1>
+                    <p class="text-sm text-white/80">Register a new client representative</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="returnToPortal()" class="px-4 py-2 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+                    ← Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area - Scroll-free Grid -->
+    <div class="flex-1 p-6 overflow-hidden">
+        <form id="contact-form" method="POST" action="/api/contacts" class="max-w-7xl mx-auto h-full flex flex-col">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 overflow-hidden">
+                
+                <!-- LEFT COLUMN: Identity & Employment -->
+                <div class="lg:col-span-2 space-y-6 overflow-y-auto pr-2 custom-scrollbar">
+                    
+                    <!-- Identity Section -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Core Identity</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Salutation</label>
+                                <select name="salutation" class="form-input w-full px-4 py-2 rounded-lg bg-white text-sm">
+                                    <option value="Mr.">Mr.</option>
+                                    <option value="Ms.">Ms.</option>
+                                    <option value="Mrs.">Mrs.</option>
+                                    <option value="Dr.">Dr.</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-1 flex items-end">
+                                <div class="checkbox-group w-full h-[38px]">
+                                    <input type="checkbox" name="isActive" id="isActive" class="w-4 h-4 accent-blue-600" checked value="true">
+                                    <label for="isActive" class="text-[10px] font-bold text-blue-700 uppercase">Active</label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">First Name *</label>
+                                <input type="text" name="firstName" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Enter name" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Middle Name</label>
+                                <input type="text" name="middleName" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Optional">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Last Name *</label>
+                                <input type="text" name="lastName" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Enter surname" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employment Section -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Professional Linkage</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Company *</label>
+                                <select name="company_id" id="companySelect" class="form-input w-full px-4 py-2 rounded-lg text-sm bg-white" required>
+                                    <option value="">-- Select Company --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Designation</label>
+                                <select name="designation" id="designationSelect" class="form-input w-full px-4 py-2 rounded-lg text-sm bg-white">
+                                    <option value="">-- Select Designation --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Department</label>
+                                <select name="department" id="departmentSelect" class="form-input w-full px-4 py-2 rounded-lg text-sm bg-white">
+                                    <option value="">-- Select Department --</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">LinkedIn URL</label>
+                                <input type="url" name="linkedinUrl" class="form-input w-full px-4 py-2 rounded-lg text-sm text-blue-600" placeholder="https://linkedin.com/in/...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Additional Context</h2>
+                        <textarea name="notes" class="form-input w-full px-4 py-3 rounded-lg text-sm min-h-[100px]" placeholder="Capture key insights from the client conversation..."></textarea>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Communication Channels -->
+                <div class="space-y-6">
+                    <div class="glass-panel p-6 rounded-2xl h-full flex flex-col">
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Communication</h2>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Primary Mobile *</label>
+                                <input type="tel" name="mobilePrimary" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="+91..." required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Alternate Mobile</label>
+                                <input type="tel" name="mobileAlternate" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Secondary">
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex-1">
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Direct Line</label>
+                                    <input type="tel" name="directNumber" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Landline">
+                                </div>
+                                <div class="w-20">
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Ext.</label>
+                                    <input type="text" name="extension" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="Ext">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Primary Email *</label>
+                                <input type="email" name="emailPrimary" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="user@company.com" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Secondary Email</label>
+                                <input type="email" name="emailAlternate" class="form-input w-full px-4 py-2 rounded-lg text-sm" placeholder="backup@...">
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-auto">
+                                <p class="text-[10px] text-blue-400 font-bold uppercase mb-1">Quick Note</p>
+                                <p class="text-xs text-blue-700 leading-relaxed italic">All fields marked with * are mandatory for database synchronization.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-200 flex-shrink-0">
+                <button type="button" onclick="resetForm()" class="btn-secondary px-8 py-3 rounded-xl font-bold">Clear Form</button>
+                <div class="flex space-x-3">
+                    <button type="submit" id="submit-btn" class="btn-primary px-12 py-3 rounded-xl font-bold shadow-lg shadow-blue-900/20">
+                        💾 Create Contact Record
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            const firstName = formData.get('firstName');
+            const lastName = formData.get('lastName');
+            const emailPrimary = formData.get('emailPrimary');
+            const mobilePrimary = formData.get('mobilePrimary');
+            
+            if (!firstName || !lastName) { showNotification('Missing names', 'error'); return; }
+            if (!isValidEmail(emailPrimary)) { showNotification('Invalid email format', 'error'); return; }
+
+            const payload = {
+                salutation: formData.get('salutation'),
+                first_name: firstName,
+                middle_name: formData.get('middleName') || null,
+                last_name: lastName,
+                designation: formData.get('designation') || null,
+                department: formData.get('department') || null,
+                company_id: formData.get('company_id') || null,
+                linkedin_url: formData.get('linkedinUrl') || null,
+                notes: formData.get('notes') || null,
+                active: formData.get('isActive') === 'true',
+                contact_contact: {
+                    mobile_primary: mobilePrimary || null,
+                    mobile_secondary: formData.get('mobileAlternate') || null,
+                    direct_number: formData.get('directNumber') || null,
+                    extension: formData.get('extension') || null,
+                    email_primary: emailPrimary || null,
+                    email_secondary: formData.get('emailAlternate') || null
+                }
+            };
+
+            // Loading state
+            submitBtn.classList.add('btn-loading');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span><span>Saving Record...</span>';
+
+            fetch(this.action, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && !data.error) {
+                    showNotification('Contact added successfully!', 'success');
+                    setTimeout(() => { window.location.href = 'contact_person_records.html'; }, 1000);
+                } else {
+                    showNotification('Database error occurred.', 'error');
+                }
+            })
+            .catch(err => {
+                showNotification('Connection failed.', 'error');
+            })
+            .finally(() => {
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>💾 Create Contact Record</span>';
+            });
+        });
+
+        function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+        function showNotification(message, type) {
+            const n = document.createElement('div');
+            n.className = `notification ${type}`;
+            n.innerHTML = `
+                <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-800 uppercase">${type}</div>
+                    <div class="text-xs text-gray-500">${message}</div>
+                </div>
+            `;
+            document.body.appendChild(n);
+            setTimeout(() => n.classList.add('show'), 10);
+            setTimeout(() => {
+                n.classList.remove('show');
+                setTimeout(() => n.remove(), 400);
+            }, 3000);
+        }
+
+        function resetForm() {
+            form.reset();
+        }
+
+        async function initPage() {
+            try {
+                // Fetch Companies
+                const compRes = await fetch('/api/companies');
+                const companies = await compRes.json();
+                const compSelect = document.getElementById('companySelect');
+                companies.sort((a,b) => (a.legal_name || '').localeCompare(b.legal_name || '')).forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.company_id; opt.textContent = c.legal_name;
+                    compSelect.appendChild(opt);
+                });
+
+                // Fetch Departments
+                const deptRes = await fetch('/api/metadata/departments');
+                const departments = await deptRes.json();
+                const deptSelect = document.getElementById('departmentSelect');
+                departments.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.name; opt.textContent = d.name;
+                    deptSelect.appendChild(opt);
+                });
+
+                // Fetch Designations
+                const desigRes = await fetch('/api/metadata/designations');
+                const designations = await desigRes.json();
+                const desigSelect = document.getElementById('designationSelect');
+                designations.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.name; opt.textContent = d.name;
+                    desigSelect.appendChild(opt);
+                });
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const cid = urlParams.get('company_id');
+                if (cid) compSelect.value = cid;
+            } catch (err) { }
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+    <script src="/profile.js"></script>
+</body>
+</html>

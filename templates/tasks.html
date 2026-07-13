@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scroll */
+            color: #f8fafc;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .new-row td, .modified-row td {
+            background: rgba(56, 189, 248, 0.05) !important;
+            border-bottom: 1px solid #38bdf8 !important;
+        }
+
+        .modified-row td {
+            border-bottom: 1px solid #10b981 !important;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            overflow: auto;
+            padding: 0;
+            background: transparent;
+        }
+
+        .task-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14px;
+        }
+
+        .task-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .task-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #334155;
+            white-space: nowrap;
+        }
+
+        .task-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            background: rgba(30, 41, 59, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .task-table tr:hover td {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+        }
+
+        .status-dropdown {
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            color: #f1f5f9;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .pending-status {
+            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.3);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .task-id {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .company-name {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .action-required {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #cbd5e1;
+            min-width: 300px;
+        }
+
+        .date-cell {
+            font-size: 13px;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        .poc-btn {
+            padding: 6px 12px;
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .poc-btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-container {
+            background: #1e293b;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .modal-search-input {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #f1f5f9;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modal-search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .contacts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .contacts-table th {
+            text-align: left;
+            padding: 12px;
+            color: #94a3b8;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #334155;
+        }
+
+        .contacts-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .contacts-table tr:hover td {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+        }
+
+        td[contenteditable="true"] {
+            cursor: cell;
+        }
+
+        td[contenteditable="true"]:focus {
+            background: rgba(56, 189, 248, 0.2);
+            outline: 2px solid #38bdf8;
+            border-radius: 4px;
+        }
+
+        /* Custom scrollbar for dark theme */
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 1024px) {
+            .task-table {
+                font-size: 12px;
+            }
+            
+            .task-table th,
+            .task-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">📋</div>
+                TASKS
+                <select id="statusFilter" class="status-dropdown" style="width: auto; margin-left: 20px;" onchange="filterTasksByStatus()">
+                    <option value="all">All Statuses</option>
+                    <option value="1">Pending</option>
+                    <option value="2">In Progress</option>
+                    <option value="3">Completed</option>
+                    <option value="4">On Hold</option>
+                </select>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="returnToPortal()">
+                    <span>🏠</span> Home
+                </button>
+                <button class="btn btn-primary" onclick="addNewTaskRow()">
+                    <span>➕</span> Add Task
+                </button>
+                <button class="btn btn-success" onclick="saveTasks()">
+                    <span>💾</span> Save Task
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content scrollbar-custom">
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>TaskID</th>
+                        <th>POC_ID</th>
+                        <th>comp_id</th>
+                        <th>Status</th>
+                        <th>Task Assigned</th>
+                        <th>Dt. of Action</th>
+                        <th>Est. Del. Dt.</th>
+                        <th>Dt. Compln Actua</th>
+                        <th>Company</th>
+                        <th>FirstName</th>
+                        <th>Lastname</th>
+                        <th>ActionRequired</th>
+                        <th>ActionTaken</th>
+                        <th>Assigned to</th>
+                        <th>Created By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table body populated by JS -->
+                </tbody>
+            </table>
+        </div>
+        <script>
+            let allContacts = [];
+            let allEmployees = [];
+            let allTasks = []; // Store all fetched tasks
+            let currentRowForPoc = null;
+            let currentRowForEmp = null;
+            let targetEmpField = null;
+            let currentUser = null;
+
+            async function fetchCurrentUser() {
+                try {
+                    const res = await fetch('/api/agent-login/me');
+                    const data = await res.json();
+                    if (data.success) currentUser = data.user;
+                } catch (err) { }
+            }
+
+            async function addNewTaskRow() {
+                const existingNewRow = document.querySelector('.new-row');
+                if (existingNewRow) {
+                    alert('Please save the current new task before adding another one.');
+                    existingNewRow.querySelector('td:nth-child(2)').focus();
+                    return;
+                }
+
+                if (!currentUser) await fetchCurrentUser();
+
+                const tbody = document.querySelector('.task-table tbody');
+                const tr = document.createElement('tr');
+                tr.className = 'new-row';
+                tr.innerHTML = `
+                    <td class="task-id">NEW</td>
+                    <td contenteditable="true" onclick="openContactModal(this)"></td>
+                    <td contenteditable="true"></td>
+                    <td>
+                        <select class="status-dropdown pending-status">
+                            <option value="1">Pending</option>
+                            <option value="2">In Progress</option>
+                            <option value="3">Completed</option>
+                            <option value="4">On Hold</option>
+                        </select>
+                    </td>
+                    <td class="date-cell" contenteditable="true"></td>
+                    <td class="date-cell" contenteditable="true"></td>
+                    <td class="date-cell" contenteditable="true"></td>
+                    <td class="date-cell" contenteditable="true"></td>
+                    <td class="company-name" contenteditable="true"></td>
+                    <td class="name-cell" contenteditable="true"></td>
+                    <td class="name-cell" contenteditable="true"></td>
+                    <td class="action-required" contenteditable="true"></td>
+                    <td class="action-taken-cell" contenteditable="true"></td>
+                    <td contenteditable="true" onclick="openEmployeeModal(this, 'assigned_to')"></td>
+                    <td data-id="${currentUser ? currentUser.employee_id : ''}">${currentUser ? currentUser.first_name + ' ' + (currentUser.last_name || '') : 'Loading...'}</td>
+                `;
+                tbody.prepend(tr);
+                tr.querySelector('td:nth-child(2)').focus();
+            }
+
+            async function saveTasks() {
+                const newRows = document.querySelectorAll('.new-row');
+                const modifiedRows = document.querySelectorAll('.modified-row');
+                
+                if (newRows.length === 0 && modifiedRows.length === 0) {
+                    alert('No changes to save.');
+                    return;
+                }
+                
+                let savedCount = 0;
+
+                // Handle NEW tasks (POST)
+                for (const row of newRows) {
+                    const cells = row.cells;
+                    const taskData = {
+                        contact_id: cells[1].innerText.trim() || null,
+                        company_id: cells[2].innerText.trim() || null,
+                        status_id: row.querySelector('.status-dropdown').value,
+                        due_date: cells[4].innerText.trim() || null,
+                        action_date: cells[5].innerText.trim() || null,
+                        estimated_completion: cells[6].innerText.trim() || null,
+                        actual_completion: cells[7].innerText.trim() || null,
+                        description: cells[11].innerText.trim() || null,
+                        action_taken: cells[12].innerText.trim() || null,
+                        assigned_to: cells[13].innerText.trim() || null,
+                        created_by: cells[14].getAttribute('data-id') || null
+                    };
+
+                    try {
+                        const response = await fetch('/api/tasks', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(taskData)
+                        });
+
+                        if (response.ok) {
+                            row.classList.remove('new-row');
+                            savedCount++;
+                        } else {
+                            const error = await response.json();
+                            alert('Error saving new task: ' + (error.error || 'Unknown error'));
+                        }
+                    } catch (err) { alert('Network error saving new task'); }
+                }
+
+                // Handle MODIFIED tasks (PUT)
+                for (const row of modifiedRows) {
+                    const taskId = row.cells[0].innerText.trim();
+                    const taskData = {
+                        status_id: row.querySelector('.status-dropdown').value
+                    };
+
+                    try {
+                        const response = await fetch(`/api/tasks/${taskId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(taskData)
+                        });
+
+                        if (response.ok) {
+                            row.classList.remove('modified-row');
+                            savedCount++;
+                        } else {
+                            const error = await response.json();
+                            alert('Error updating task ' + taskId + ': ' + (error.error || 'Unknown error'));
+                        }
+                    } catch (err) { alert('Network error updating task ' + taskId); }
+                }
+
+                if (savedCount > 0) {
+                    alert(`Successfully processed ${savedCount} change(s).`);
+                    loadTasks();
+                }
+            }
+
+            function markAsModified(element) {
+                const row = element.closest('tr');
+                if (!row.classList.contains('new-row')) {
+                    row.classList.add('modified-row');
+                }
+            }
+
+            async function loadTasks() {
+                try {
+                    const res = await fetch('/api/tasks');
+                    allTasks = await res.json();
+                    filterTasksByStatus(); // Initial render with current filter
+                } catch (err) { }
+            }
+
+            function filterTasksByStatus() {
+                const filterValue = document.getElementById('statusFilter').value;
+                const filteredTasks = filterValue === 'all' 
+                    ? allTasks 
+                    : allTasks.filter(t => t.status_id.toString() === filterValue);
+                
+                renderTasksTable(filteredTasks);
+            }
+
+            function renderTasksTable(tasks) {
+                const tbody = document.querySelector('.task-table tbody');
+                tbody.innerHTML = '';
+                tasks.forEach(t => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="task-id">${t.task_id}</td>
+                        <td><button class="poc-btn" onclick="window.location.href='contact_person_records.html?contact_id=${t.contact_id}'">${t.contact_id || ''}</button></td>
+                        <td>${t.company_id ? `<span class="company-id-link" onclick="window.location.href='company_records.html?company_id=${t.company_id}'" style="color:#38bdf8; cursor:pointer; font-weight:700;">${t.company_id}</span>` : ''}</td>
+                        <td>
+                            <select class="status-dropdown" onchange="markAsModified(this)">
+                                <option value="1" ${t.status_id === 1 ? 'selected' : ''}>Pending</option>
+                                <option value="2" ${t.status_id === 2 ? 'selected' : ''}>In Progress</option>
+                                <option value="3" ${t.status_id === 3 ? 'selected' : ''}>Completed</option>
+                                <option value="4" ${t.status_id === 4 ? 'selected' : ''}>On Hold</option>
+                            </select>
+                        </td>
+                        <td class="date-cell">${t.due_date ? new Date(t.due_date).toLocaleDateString() : ''}</td>
+                        <td class="date-cell">${t.action_date ? new Date(t.action_date).toLocaleDateString() : ''}</td>
+                        <td class="date-cell">${t.estimated_completion ? new Date(t.estimated_completion).toLocaleDateString() : ''}</td>
+                        <td class="date-cell">${t.actual_completion ? new Date(t.actual_completion).toLocaleDateString() : ''}</td>
+                        <td class="company-name">${t.company_name || ''}</td>
+                        <td class="name-cell">${t.first_name || ''}</td>
+                        <td class="name-cell">${t.last_name || ''}</td>
+                        <td class="action-required">${t.description || ''}</td>
+                        <td class="action-taken-cell">${t.action_taken || ''}</td>
+                        <td>${t.assignee_first || ''} ${t.assignee_last || ''}</td>
+                        <td>${t.creator_first || ''} ${t.creator_last || ''}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            async function openContactModal(cell) {
+                currentRowForPoc = cell.parentElement;
+                document.getElementById('contactModal').style.display = 'flex';
+                document.getElementById('contactSearch').value = '';
+                if (allContacts.length === 0) await fetchContacts();
+                else renderContacts(allContacts);
+                document.getElementById('contactSearch').focus();
+            }
+
+            function closeContactModal() {
+                document.getElementById('contactModal').style.display = 'none';
+            }
+
+            async function openEmployeeModal(cell, field) {
+                currentRowForEmp = cell.parentElement;
+                targetEmpField = field;
+                document.getElementById('employeeModal').style.display = 'flex';
+                document.getElementById('employeeSearch').value = '';
+                if (allEmployees.length === 0) await fetchEmployees();
+                else renderEmployees(allEmployees);
+                document.getElementById('employeeSearch').focus();
+            }
+
+            function closeEmployeeModal() {
+                document.getElementById('employeeModal').style.display = 'none';
+            }
+
+            async function fetchContacts() {
+                try {
+                    const res = await fetch('/api/contacts');
+                    allContacts = await res.json();
+                    renderContacts(allContacts);
+                } catch (err) { } 
+
+            }
+
+            async function fetchEmployees() {
+                try {
+                    const res = await fetch('/api/employees');
+                    allEmployees = await res.json();
+                    renderEmployees(allEmployees);
+                } catch (err) { }
+            }
+
+            function renderContacts(contacts) {
+                const list = document.getElementById('contactsList');
+                list.innerHTML = '';
+                contacts.forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.onclick = () => selectContact(c);
+                    tr.innerHTML = `<td>${c.contact_id}</td><td>${c.first_name || ''}</td><td>${c.last_name || ''}</td><td>${c.company_name || 'N/A'}</td>`;
+                    list.appendChild(tr);
+                });
+            }
+
+            function renderEmployees(employees) {
+                const list = document.getElementById('employeesList');
+                list.innerHTML = '';
+                employees.forEach(e => {
+                    const tr = document.createElement('tr');
+                    tr.onclick = () => selectEmployee(e);
+                    tr.innerHTML = `<td>${e.employee_id}</td><td>${e.first_name || ''}</td><td>${e.last_name || ''}</td><td>${e.designation_name || ''}</td>`;
+                    list.appendChild(tr);
+                });
+            }
+
+            function filterContacts() {
+                const term = document.getElementById('contactSearch').value.toLowerCase();
+                renderContacts(allContacts.filter(c => 
+                    (c.first_name && c.first_name.toLowerCase().includes(term)) ||
+                    (c.last_name && c.last_name.toLowerCase().includes(term)) ||
+                    (c.contact_id.toString().includes(term)) ||
+                    (c.company_name && c.company_name.toLowerCase().includes(term))
+                ));
+            }
+
+            function filterEmployees() {
+                const term = document.getElementById('employeeSearch').value.toLowerCase();
+                renderEmployees(allEmployees.filter(e => 
+                    (e.first_name && e.first_name.toLowerCase().includes(term)) ||
+                    (e.last_name && e.last_name.toLowerCase().includes(term)) ||
+                    (e.employee_id.toString().includes(term))
+                ));
+            }
+
+            function selectContact(contact) {
+                if (!currentRowForPoc) return;
+                const cells = currentRowForPoc.cells;
+                cells[1].innerText = contact.contact_id;
+                cells[2].innerText = contact.company_id || '';
+                cells[8].innerText = contact.company_name || '';
+                cells[9].innerText = contact.first_name || '';
+                cells[10].innerText = contact.last_name || '';
+                closeContactModal();
+            }
+
+            function selectEmployee(employee) {
+                if (!currentRowForEmp) return;
+                const cells = currentRowForEmp.cells;
+                if (targetEmpField === 'assigned_to') {
+                    cells[13].innerText = employee.employee_id;
+                    cells[13].dataset.id = employee.employee_id;
+                } else if (targetEmpField === 'created_by') {
+                    cells[14].innerText = employee.employee_id;
+                    cells[14].dataset.id = employee.employee_id;
+                }
+                closeEmployeeModal();
+            }
+
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('contactModal')) closeContactModal();
+                if (event.target == document.getElementById('employeeModal')) closeEmployeeModal();
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadTasks();
+                fetchCurrentUser();
+            });
+        </script>
+        <!-- Removed .action-section -->
+    </div>
+
+    <!-- Contact Selection Modal -->
+    <div id="contactModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">Select Contact Person</div>
+                <button class="modal-close" onclick="closeContactModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-container">
+                    <input type="text" id="contactSearch" class="modal-search-input" placeholder="Search by name, ID, or company..." onkeyup="filterContacts()">
+                </div>
+                <div class="scrollbar-custom" style="max-height: 400px; overflow-y: auto;">
+                    <table class="contacts-table">
+                        <thead><tr><th>POC ID</th><th>First Name</th><th>Last Name</th><th>Company</th></tr></thead>
+                        <tbody id="contactsList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Selection Modal -->
+    <div id="employeeModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">Select Employee</div>
+                <button class="modal-close" onclick="closeEmployeeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-container">
+                    <input type="text" id="employeeSearch" class="modal-search-input" placeholder="Search by name or ID..." onkeyup="filterEmployees()">
+                </div>
+                <div class="scrollbar-custom" style="max-height: 400px; overflow-y: auto;">
+                    <table class="contacts-table">
+                        <thead><tr><th>Emp ID</th><th>First Name</th><th>Last Name</th><th>Designation</th></tr></thead>
+                        <tbody id="employeesList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/profile.js"></script>
+</body>
+</html>tml>
