@@ -22,6 +22,9 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE,
   port: process.env.PGPORT || 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 // Quick connection test to provide a clearer error early
