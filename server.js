@@ -50,6 +50,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 // Protect agent portal pages
 const agentPages = [
+	'agent_login.html',
     'agent.html',
     'company_records.html',
     'contact_person_records.html',
