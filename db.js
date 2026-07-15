@@ -13,8 +13,7 @@ pool.query('SELECT 1').then(() => {
   console.log('Postgres connection test OK');
 }).catch(err => {
   console.error('Postgres connection test FAILED. Check PGHOST, PGUSER, PGPASSWORD, PGDATABASE and that Postgres is running. Error:', err.message);
-  // Exit to avoid running an app with broken DB config
-  process.exit(1);
+  // Do not exit the process in production (e.g. Render) to allow successful deployment and retries.
 });
 
 module.exports = {
