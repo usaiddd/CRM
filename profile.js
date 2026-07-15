@@ -192,7 +192,7 @@
                 // Logout logic
                 document.getElementById('logoutBtn').onclick = async () => {
                     await fetch('/api/agent-login/logout', { method: 'POST' });
-                    window.location.href = 'agent_login.html';
+                    window.location.href = '/templates/agent_login.html';
                 };
             }
         } catch (err) {
